@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contracts\Configuration\CyberPlatHttpClientConfiguration.cs" />
     <Compile Include="Contracts\Http\LimitsRequest.cs" />
     <Compile Include="Contracts\Http\StatusRequest.cs" />
     <Compile Include="Contracts\Http\PayRequest.cs" />
