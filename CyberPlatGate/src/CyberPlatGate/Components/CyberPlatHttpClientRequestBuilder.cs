@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using CyberPlatGate.Contracts.Http;
 using org.CyberPlat;
@@ -11,32 +12,39 @@ namespace CyberPlatGate.Components
 {
     class CyberPlatHttpClientRequestBuilder : ICyberPlatHttpClientRequestBuilder, IDisposable
     {
-        private string PublicKeyPath { get; }
         private string SecretKeyPath { get; }
+        private string PublicKeyPath { get; }
+        private string SecretKeyPassword { get; }
+        private string PublicKeySerial { get; }
 
-        public CyberPlatHttpClientRequestBuilder(string publicKeyPath, string secretKeyPath)
+        public CyberPlatHttpClientRequestBuilder(string secretKeyPath, string publicKeyPath, string secretKeyPassword, string publicKeySerial)
         {
-            checkKeyPath(publicKeyPath);
             checkKeyPath(secretKeyPath);
-            PublicKeyPath = publicKeyPath;
+            checkKeyPath(publicKeyPath);
+
             SecretKeyPath = secretKeyPath;
+            PublicKeyPath = publicKeyPath;
+
+            SecretKeyPassword = secretKeyPassword;
+            PublicKeySerial = publicKeySerial;
 
             IPriv.Initialize();
+            checkKeys(); // Fail-fast
         }
 
         public string Build(CheckRequest request)
         {
-            return buildCore(request);
+            return signText(buildCore(request));
         }
 
         public string Build(PayRequest request)
         {
-            return buildCore(request);
+            return signText(buildCore(request));
         }
 
         public string Build(StatusRequest request)
         {
-            return buildCore(request);
+            return signText(buildCore(request));
         }
 
         private static string buildCore<T>(T request)
@@ -45,7 +53,41 @@ namespace CyberPlatGate.Components
             return string.Join(Environment.NewLine, dict.Select(kvp => kvp.Key + "=" + kvp.Value));
         }
 
+        private string signText(string inputText)
+        {
+            IPrivKey secretKey = null;
+            try
+            {
+                secretKey = IPriv.openSecretKey(SecretKeyPath, SecretKeyPassword);
+                return secretKey.signText(inputText);
+            }
+            catch (IPrivException err)
+            {
+                throw new CryptographicException(err + " (код ошибки = " + err.code + ")", err);
+            }
+            finally
+            {
+                secretKey?.closeKey();
+            }
+        }
 
+        private void verifyText(string inputText)
+        {
+            IPrivKey publicKey = null;
+            try
+            {
+                publicKey = IPriv.openPublicKey(PublicKeyPath, Convert.ToUInt32(PublicKeySerial, 10));
+                publicKey.verifyText(inputText); // If this step is successfull, then signature is valid
+            }
+            catch (IPrivException err)
+            {
+                throw new CryptographicException(err + " (код ошибки = " + err.code + ")", err);
+            }
+            finally
+            {
+                publicKey?.closeKey();
+            }
+        }
 
         private static void checkKeyPath(string keyPath)
         {
@@ -53,6 +95,15 @@ namespace CyberPlatGate.Components
                 throw new ArgumentNullException($"Invalid path specified for {nameof(CyberPlatHttpClientRequestBuilder)}. Passed value is '{keyPath}'.", nameof(keyPath));
             if (!File.Exists(keyPath))
                 throw new ArgumentException($"There is no file by specified path '{keyPath}'", nameof(keyPath));
+        }
+
+        /// <summary>Fail-fast checking of keys opening.</summary>
+        private void checkKeys()
+        {
+            var secretKey = IPriv.openSecretKey(SecretKeyPath, SecretKeyPassword);
+            var publicKey = IPriv.openPublicKey(PublicKeyPath, Convert.ToUInt32(PublicKeySerial, 10));
+            secretKey?.closeKey();
+            publicKey?.closeKey();
         }
 
         private static Dictionary<string, string> toDictionary<T>(T @object)
