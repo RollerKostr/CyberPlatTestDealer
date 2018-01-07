@@ -47,10 +47,15 @@ namespace CyberPlatGate.Components
             return signText(buildCore(request));
         }
 
+        public void Verify(string response)
+        {
+            verifyText(response); // should not throw any exception in case of success
+        }
+
         private static string buildCore<T>(T request)
         {
             var dict = toDictionary(request);
-            return string.Join(Environment.NewLine, dict.Select(kvp => kvp.Key + "=" + kvp.Value));
+            return string.Join("\r\n", dict.Select(kvp => kvp.Key + "=" + kvp.Value));
         }
 
         private string signText(string inputText)

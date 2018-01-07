@@ -81,31 +81,22 @@ namespace CyberPlatGate.Tests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 0000051701SM000002560000025600000125
-        ///api17032            00017033
+        ///   Looks up a localized string similar to 0000032701SM000000660000006600000125
+        ///0J0005              00064182
         ///                    00000000
         ///BEGIN
-        ///SD=17031
-        ///AP=17032
-        ///OP=17034
-        ///DATE=07.01.2018 21:23:19
-        ///SESSION=71838f9a01294d109a301b3971dcc0c0
-        ///NUMBER=9261112233
-        ///ACCOUNT=
-        ///AMOUNT=1234.56
-        ///AMOUNT_ALL=1249.99
-        ///REQ_TYPE=1
-        ///PAY_TOOL=0
-        ///TERM_ID=
-        ///COMMENT=test test 0123456789
-        ///ACCEPT_KEYS=64182
-        ///NO_ROUTE=1
+        ///DATE=07.01.2018 22:52:34
+        ///SESSION=
+        ///ERROR=10
+        ///RESULT=1
+        ///TRANSID=
+        ///
         ///END
         ///BEGIN SIGNATURE
-        ///iQBRAwkBAABCiVpSZZ8BATq5AgCw9zbMNvYm6a6wJWopMZ59nifJimxAqoOirslX
-        ///tXVpcfNf3T4Og+7Xo+Jzgve+vZAj4eng0zXFm+GSRIYL6frUsAHH
-        ///=HjNF
-        /// [rest of string was truncated]&quot;;.
+        ///iQBRAwkBAAD6tlpSeoIBAZGTAgDIHxCXB7CGQrzj6BF0sHvhRk1ZX6FKKT7UZ/T+
+        ///NwSREzpSVYGoxGQLo0m9Cop4IZ0JOyIe1f/RonfmAChWmof5sAHH
+        ///=mM3I
+        ///END SIGNATURE.
         /// </summary>
         internal static string ServerCheckResponse {
             get {

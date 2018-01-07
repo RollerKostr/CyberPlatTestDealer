@@ -7,5 +7,6 @@ namespace CyberPlatGate.Components
         string Build(StatusRequest request);
         string Build(PayRequest request);
         string Build(CheckRequest request);
+        void Verify(string response);
     }
 }

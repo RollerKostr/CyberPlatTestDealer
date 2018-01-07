@@ -1,11 +1,12 @@
-﻿using CyberPlatGate.Contracts.Http;
+﻿using System.Threading.Tasks;
+using CyberPlatGate.Contracts.Http;
 
 namespace CyberPlatGate.Components
 {
     interface ICyberPlatHttpClient
     {
-        StatusResponse Send(StatusRequest request);
-        PayResponse Send(PayRequest request);
-        CheckResponse Send(CheckRequest request);
+        Task<StatusResponse> Send(StatusRequest request);
+        Task<PayResponse> Send(PayRequest request);
+        Task<CheckResponse> Send(CheckRequest request);
     }
 }

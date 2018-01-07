@@ -1,4 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web;
 using CyberPlatGate.Contracts.Configuration;
 using CyberPlatGate.Contracts.Http;
 
@@ -10,7 +17,8 @@ namespace CyberPlatGate.Components
         private Uri PayUrl { get; }
         private Uri StatusUrl { get; }
 
-        private ICyberPlatHttpClientRequestBuilder m_Builder;
+        private readonly ICyberPlatHttpClientRequestBuilder m_Builder;
+        private static readonly HttpClient m_HttpClient = new HttpClient();
 
         public CyberPlatHttpClient(CyberPlatHttpClientConfiguration configuration, ICyberPlatHttpClientRequestBuilder builder)
         {
@@ -22,22 +30,38 @@ namespace CyberPlatGate.Components
             StatusUrl = ValidateUrl(configuration.StatusUrl);
         }
 
-        public CheckResponse Send(CheckRequest request)
+        public async Task<CheckResponse> Send(CheckRequest request)
+        {
+            var signedData = m_Builder.Build(request);
+            var responseTxt = await post(CheckUrl, signedData);
+            m_Builder.Verify(responseTxt);
+            // TODO[mk] Implement parsing
+            return await Task.FromResult(new CheckResponse());
+        }
+
+        public async Task<PayResponse> Send(PayRequest request)
         {
             throw new NotImplementedException();
         }
 
-        public PayResponse Send(PayRequest request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public StatusResponse Send(StatusRequest request)
+        public async Task<StatusResponse> Send(StatusRequest request)
         {
             throw new NotImplementedException();
         }
 
 
+
+        private async Task<string> post(Uri url, string data)
+        {
+            var values = new Dictionary<string, string>
+            {
+                { "inputmessage", data },
+            };
+
+            var response = await m_HttpClient.PostAsync(url, new FormUrlEncodedContent(values));
+
+            return await response.Content.ReadAsStringAsync();
+        }
 
         public static Uri ValidateUrl(string urlStr)
         {

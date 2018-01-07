@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Security.Cryptography;
 using CyberPlatGate.Components;
 using CyberPlatGate.Contracts.Http;
 using FluentAssertions;
@@ -59,7 +60,8 @@ namespace CyberPlatGate.Tests.Components
         {
             using (var builder = new CyberPlatHttpClientRequestBuilder(SecKeyPath, PubKeyPath, SEC_KEY_PASSWORD, PUB_KEY_SERIAL))
             {
-                //var result = builder.Decode(Resources.ServerCheckResponse);
+                Action action = () => { builder.Verify(Resources.ServerCheckResponse); };
+                action.ShouldNotThrow<CryptographicException>();
             }
         }
 
