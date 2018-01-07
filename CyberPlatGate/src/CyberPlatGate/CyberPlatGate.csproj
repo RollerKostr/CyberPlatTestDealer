@@ -51,6 +51,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\libipriv\libipriv.cs">
+      <Link>ThirdParty\libipriv.cs</Link>
+    </Compile>
+    <Compile Include="Components\CyberPlatHttpClientRequestBuilder.cs" />
+    <Compile Include="Components\ICyberPlatHttpClient.cs" />
+    <Compile Include="Components\ICyberPlatHttpClientRequestBuilder.cs" />
     <Compile Include="Contracts\Configuration\CyberPlatHttpClientConfiguration.cs" />
     <Compile Include="Contracts\Http\LimitsRequest.cs" />
     <Compile Include="Contracts\Http\StatusRequest.cs" />

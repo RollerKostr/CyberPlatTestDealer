@@ -11,8 +11,8 @@ namespace CyberPlatGate.Tests.Components
     class CyberPlatHttpClientTests
     {
         [Test]
-        [TestCaseSource(nameof(validUrls), Category = nameof(validUrls))]
-        [TestCaseSource(nameof(invalidUrls), Category = nameof(invalidUrls))]
+        [TestCaseSource(nameof(ValidUrls), Category = nameof(ValidUrls))]
+        [TestCaseSource(nameof(InvalidUrls), Category = nameof(InvalidUrls))]
         public void CyberPlatHttpClientUrlTest(string url)
         {
             Action action = () => { var uri = CyberPlatHttpClient.ValidateUrl(url); };
@@ -20,10 +20,10 @@ namespace CyberPlatGate.Tests.Components
 
             switch (cat)
             {
-                case nameof(validUrls):
+                case nameof(ValidUrls):
                     action.ShouldNotThrow<ArgumentException>();
                     break;
-                case nameof(invalidUrls):
+                case nameof(InvalidUrls):
                     action.ShouldThrow<ArgumentException>();
                     break;
             }
@@ -31,7 +31,7 @@ namespace CyberPlatGate.Tests.Components
 
         #region Test cases
 
-        private static IEnumerable<string> validUrls
+        private static IEnumerable<string> ValidUrls
         {
             get
             {
@@ -44,7 +44,7 @@ namespace CyberPlatGate.Tests.Components
             }
         }
 
-        private static IEnumerable<string> invalidUrls
+        private static IEnumerable<string> InvalidUrls
         {
             get
             {
