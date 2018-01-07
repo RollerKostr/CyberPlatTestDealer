@@ -9,15 +9,15 @@ namespace CyberPlatGate.Contracts.Http
 		/// Контрагент самостоятельно генерирует этот идентификатор по своим правилам, соблюдая условие уникальности идентификатора сессии для данной точки приема.
 		/// Поле не является обязательным
 		///</summary>
-		public string SESSION;
+		public string SESSION { get; set; }
 		///<summary>
 		/// уникальный идентификатор платежа в системе КиберПлат, содержит 13 цифр. Поле не является обязательным
 		///</summary>
-		public string TRANSID;
+		public string TRANSID { get; set; }
 		///<summary>
 		/// серийный номер ключа, которым сервер должен подписать ответ.
 		/// Поле может содержать цифры, латинские буквы и знак &lt;-&gt;. Данное поле является обязательным
 		///</summary>
-		public string ACCEPT_KEYS;
+		public string ACCEPT_KEYS { get; set; }
     }
 }

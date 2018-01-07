@@ -6,23 +6,23 @@ namespace CyberPlatGate.Contracts.Http
 		///<summary>
 		/// NNN, значение равно 0 при отсутствии ошибки, иначе – код ошибки
 		///</summary>
-		public string ERROR;
+		public string ERROR { get; set; }
 		///<summary>
 		/// NNNNNN.NN – остаток доступных Контрагенту средств с учетом лимитов на счете Контрагента и лимитов на точке, (здесь N – цифра, разделитель – точка)
 		///</summary>
-		public string REST;
+		public string REST { get; set; }
 		///<summary>
 		/// NNNNNN.NN – текущий остаток на счете Контрагента без учета лимитов
 		///</summary>
-		public string REST_WO_LIMIT;
+		public string REST_WO_LIMIT { get; set; }
 		///<summary>
 		/// NNNNNN.NN – значение установленного на точку лимита, равное максимальному размеру дневного оборота по точке.
 		/// Если лимит не установлен, параметр передается без значения
 		///</summary>
-		public string AP_DAILY_LIMIT;
+		public string AP_DAILY_LIMIT { get; set; }
 		///<summary>
 		/// NNNNN.NN – лимит на максимальный размер одиночного платежа; если этот лимит не установлен, параметр передается без значения
 		///</summary>
-		public string AP_PAYMENT_LIMIT;
+		public string AP_PAYMENT_LIMIT { get; set; }
     }
 }

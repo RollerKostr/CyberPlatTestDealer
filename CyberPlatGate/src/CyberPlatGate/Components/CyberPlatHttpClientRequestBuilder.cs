@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
 using CyberPlatGate.Contracts.Http;
 using org.CyberPlat;
 
@@ -22,25 +26,40 @@ namespace CyberPlatGate.Components
 
         public string Build(CheckRequest request)
         {
-            throw new NotImplementedException();
+            return buildCore(request);
         }
 
         public string Build(PayRequest request)
         {
-            throw new NotImplementedException();
+            return buildCore(request);
         }
 
         public string Build(StatusRequest request)
         {
-            throw new NotImplementedException();
+            return buildCore(request);
         }
 
-        private void checkKeyPath(string keyPath)
+        private static string buildCore<T>(T request)
+        {
+            var dict = toDictionary(request);
+            return string.Join(Environment.NewLine, dict.Select(kvp => kvp.Key + "=" + kvp.Value));
+        }
+
+
+
+        private static void checkKeyPath(string keyPath)
         {
             if (string.IsNullOrWhiteSpace(keyPath))
                 throw new ArgumentNullException($"Invalid path specified for {nameof(CyberPlatHttpClientRequestBuilder)}. Passed value is '{keyPath}'.", nameof(keyPath));
             if (!File.Exists(keyPath))
                 throw new ArgumentException($"There is no file by specified path '{keyPath}'", nameof(keyPath));
+        }
+
+        private static Dictionary<string, string> toDictionary<T>(T @object)
+        {
+            return @object.GetType()
+                .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                .ToDictionary(prop => prop.Name, prop => (string) prop.GetValue(@object, null));
         }
 
         #region IDisposable

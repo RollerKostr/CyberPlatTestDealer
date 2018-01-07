@@ -13,7 +13,7 @@ namespace CyberPlatGate.Tests.Components
         [Test]
         [TestCaseSource(nameof(ValidUrls), Category = nameof(ValidUrls))]
         [TestCaseSource(nameof(InvalidUrls), Category = nameof(InvalidUrls))]
-        public void CyberPlatHttpClientUrlTest(string url)
+        public void UrlTest(string url)
         {
             Action action = () => { var uri = CyberPlatHttpClient.ValidateUrl(url); };
             var cat = (string) TestContext.CurrentContext.Test.Properties.Get("Category");
