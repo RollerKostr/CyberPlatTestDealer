@@ -51,8 +51,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contracts\Http\LimitsRequest.cs" />
     <Compile Include="Contracts\Http\StatusRequest.cs" />
     <Compile Include="Contracts\Http\PayRequest.cs" />
+    <Compile Include="Contracts\Http\LimitsResponse.cs" />
     <Compile Include="Contracts\Http\StatusResponse.cs" />
     <Compile Include="Contracts\Http\PayResponse.cs" />
     <Compile Include="Contracts\Http\CheckResponse.cs" />
