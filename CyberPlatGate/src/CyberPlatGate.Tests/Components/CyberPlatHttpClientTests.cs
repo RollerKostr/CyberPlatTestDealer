@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CyberPlatGate.Components;
-using CyberPlatGate.Components.Utility;
-using CyberPlatGate.Tests.Contracts;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -12,7 +10,7 @@ namespace CyberPlatGate.Tests.Components
     [TestFixture]
     class CyberPlatHttpClientTests
     {
-        //TODO[mk] mock builder with NSubstitute and write good unit-tests
+        //TODO[mk] mock manager with NSubstitute and write good unit-tests
 
         [Test]
         [TestCaseSource(nameof(ValidUrls), Category = nameof(ValidUrls))]
@@ -31,30 +29,6 @@ namespace CyberPlatGate.Tests.Components
                 case nameof(InvalidUrls):
                     action.ShouldThrow<ArgumentException>();
                     break;
-            }
-        }
-
-        [Test]
-        [Ignore("Integrational")]
-        public async Task CheckPayStatusTest()
-        {
-            using (var builder = new CyberPlatHttpClientRequestBuilder(TestConfigurations.BuilderConfiguration))
-            {
-                var handler = new ConsoleLoggingHttpHandler();
-                var client = new CyberPlatHttpClient(builder, TestConfigurations.ClientConfiguration, handler);
-
-                var checkRequest = ValidContracts.GenerateCheckRequest();
-                var checkResponse = await client.Send(checkRequest).ConfigureAwait(false);
-                if (checkResponse.RESULT != "0" && checkResponse.ERROR != "0")
-                    throw new Exception("Server returns CheckResponse with error.");
-
-                var payResponse = await client.Send(ValidContracts.GeneratePayRequest(checkRequest)).ConfigureAwait(false);
-                if (payResponse.RESULT != "0" && payResponse.ERROR != "0")
-                    throw new Exception("Server returns PayResponse with error.");
-
-                var statusResponse = await client.Send(ValidContracts.GenerateStatusRequest(payResponse)).ConfigureAwait(false);
-                if (statusResponse.RESULT != "7" && statusResponse.ERROR != "0")
-                    throw new Exception("Server returns StatusResponse with error.");
             }
         }
 

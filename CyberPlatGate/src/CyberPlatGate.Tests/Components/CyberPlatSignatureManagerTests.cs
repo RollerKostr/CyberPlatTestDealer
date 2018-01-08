@@ -13,13 +13,13 @@ using NUnit.Framework;
 namespace CyberPlatGate.Tests.Components
 {
     [TestFixture]
-    class CyberPlatHttpClientRequestBuilderTests
+    class CyberPlatSignatureManagerTests
     {
-        private static CyberPlatHttpClientRequestBuilderConfiguration TestConf
+        private static CyberPlatSignatureManagerConfiguration TestConf
         {
             get
             {
-                var validConf = TestConfigurations.BuilderConfiguration;
+                var validConf = TestConfigurations.ManagerConfiguration;
                 // Required for NUnit v3.0+ due to different working folder
                 validConf.SecretKeyPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "sec.txt");
                 validConf.PublicKeyPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "pub.txt");
@@ -46,7 +46,7 @@ namespace CyberPlatGate.Tests.Components
         {
             Action action = () =>
             {
-                using (var builder = new CyberPlatHttpClientRequestBuilder(TestConf))
+                using (var manager = new CyberPlatSignatureManager(TestConf))
                 {
                 }
             };
@@ -58,9 +58,9 @@ namespace CyberPlatGate.Tests.Components
         [TestCaseSource(nameof(ValidRequests))]
         public void BuildTest(dynamic request)
         {
-            using (var builder = new CyberPlatHttpClientRequestBuilder(TestConf))
+            using (var manager = new CyberPlatSignatureManager(TestConf))
             {
-                Action action = () => { var result = builder.Build(request); };
+                Action action = () => { var result = manager.Sign(request); };
                 action.ShouldNotThrow();
             }
         }
@@ -69,9 +69,9 @@ namespace CyberPlatGate.Tests.Components
         [TestCaseSource(nameof(ValidServerResponses))]
         public void VerifyTest(string responseStr, string typeName)
         {
-            using (var builder = new CyberPlatHttpClientRequestBuilder(TestConf))
+            using (var manager = new CyberPlatSignatureManager(TestConf))
             {
-                Action action = () => { builder.Verify(responseStr); };
+                Action action = () => { manager.Verify(responseStr); };
                 action.ShouldNotThrow<CryptographicException>();
             }
         }
@@ -80,7 +80,7 @@ namespace CyberPlatGate.Tests.Components
         [TestCaseSource(nameof(ValidServerResponses))]
         public void ParseTest(string responseStr, string typeName)
         {
-            using (var builder = new CyberPlatHttpClientRequestBuilder(TestConf))
+            using (var manager = new CyberPlatSignatureManager(TestConf))
             {
                 Action action = () =>
                 {
@@ -88,13 +88,13 @@ namespace CyberPlatGate.Tests.Components
                     switch (typeName)
                     {
                         case nameof(CheckResponse):
-                            response = builder.Parse<CheckResponse>(responseStr);
+                            response = manager.Parse<CheckResponse>(responseStr);
                             break;
                         case nameof(PayResponse):
-                            response = builder.Parse<PayResponse>(responseStr);
+                            response = manager.Parse<PayResponse>(responseStr);
                             break;
                         case nameof(StatusResponse):
-                            response = builder.Parse<StatusResponse>(responseStr);
+                            response = manager.Parse<StatusResponse>(responseStr);
                             break;
                     }
                 };
@@ -118,8 +118,8 @@ namespace CyberPlatGate.Tests.Components
         {
             get
             {
-                yield return new object[] { Resources.ServerCheckResponse, nameof(CheckResponse) };
-                yield return new object[] { Resources.ServerPayResponse, nameof(PayResponse) };
+                yield return new object[] { Resources.ServerCheckResponse,  nameof(CheckResponse) };
+                yield return new object[] { Resources.ServerPayResponse,    nameof(PayResponse) };
                 yield return new object[] { Resources.ServerStatusResponse, nameof(StatusResponse) };
             }
         }

@@ -11,11 +11,11 @@ using org.CyberPlat;
 
 namespace CyberPlatGate.Components
 {
-    class CyberPlatHttpClientRequestBuilder : ICyberPlatHttpClientRequestBuilder, IDisposable
+    class CyberPlatSignatureManager : ICyberPlatSignatureManager, IDisposable
     {
-        private readonly CyberPlatHttpClientRequestBuilderConfiguration m_Configuration;
+        private readonly CyberPlatSignatureManagerConfiguration m_Configuration;
 
-        public CyberPlatHttpClientRequestBuilder(CyberPlatHttpClientRequestBuilderConfiguration configuration)
+        public CyberPlatSignatureManager(CyberPlatSignatureManagerConfiguration configuration)
         {
             if (configuration == null) throw new ArgumentNullException(nameof(configuration));
             m_Configuration = configuration;
@@ -25,7 +25,7 @@ namespace CyberPlatGate.Components
             checkKeys(); // Fail-fast
         }
 
-        public string Build<T>(T request)
+        public string Sign<T>(T request)
         {
             fillAcceptKeysField(request);
 
@@ -136,7 +136,7 @@ namespace CyberPlatGate.Components
         private static void checkKeyPath(string keyPath)
         {
             if (string.IsNullOrWhiteSpace(keyPath))
-                throw new ArgumentNullException($"Invalid path specified for {nameof(CyberPlatHttpClientRequestBuilder)}. Passed value is '{keyPath}'.", nameof(keyPath));
+                throw new ArgumentNullException($"Invalid path specified for {nameof(CyberPlatSignatureManager)}. Passed value is '{keyPath}'.", nameof(keyPath));
             if (!File.Exists(keyPath))
                 throw new ArgumentException($"There is no file by specified path '{keyPath}'", nameof(keyPath));
         }
@@ -187,7 +187,7 @@ namespace CyberPlatGate.Components
             GC.SuppressFinalize(this);
         }
 
-        ~CyberPlatHttpClientRequestBuilder()
+        ~CyberPlatSignatureManager()
         {
             Dispose(false);
         }

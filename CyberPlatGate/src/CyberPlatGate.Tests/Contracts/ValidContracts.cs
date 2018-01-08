@@ -27,7 +27,7 @@ namespace CyberPlatGate.Tests.Contracts
                 TERM_ID = null,
                 //COMMENT = "TEST Кириллица TEST 0123456789", // CyberPlat not supports cyrillic even if I urlencode in cp1521
                 COMMENT = "TEST 0123456789",
-                ACCEPT_KEYS = TestConfigurations.BuilderConfiguration.PublicKeySerial,
+                ACCEPT_KEYS = TestConfigurations.ManagerConfiguration.PublicKeySerial,
                 NO_ROUTE = "1",
             };
         }
@@ -49,7 +49,7 @@ namespace CyberPlatGate.Tests.Contracts
                 TERM_ID = checkRequest.TERM_ID,
                 COMMENT = "TEST 9876543210",
                 RRN = RandomStringGenerator.GenerateNumericString(32, Rng),
-                ACCEPT_KEYS = TestConfigurations.BuilderConfiguration.PublicKeySerial,
+                ACCEPT_KEYS = TestConfigurations.ManagerConfiguration.PublicKeySerial,
                 NO_ROUTE = "1",
             };
         }
@@ -74,7 +74,7 @@ namespace CyberPlatGate.Tests.Contracts
             {
                 SESSION = payResponse.SESSION,
                 TRANSID = payResponse.TRANSID,
-                ACCEPT_KEYS = TestConfigurations.BuilderConfiguration.PublicKeySerial,
+                ACCEPT_KEYS = TestConfigurations.ManagerConfiguration.PublicKeySerial,
             };
         }
     }

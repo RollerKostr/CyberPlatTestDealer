@@ -6,7 +6,7 @@ namespace CyberPlatGate.Tests.Contracts
     /// <summary>Configurations for integrational tests ONLY!</summary>
     static class TestConfigurations
     {
-        public static CyberPlatHttpClientRequestBuilderConfiguration BuilderConfiguration => new CyberPlatHttpClientRequestBuilderConfiguration()
+        public static CyberPlatSignatureManagerConfiguration ManagerConfiguration => new CyberPlatSignatureManagerConfiguration()
         {
             SecretKeyPath = @"C:\Users\RollerKostr\Downloads\29052017_libipriv_win\ActiveX\secret.key",
             PublicKeyPath = @"C:\Users\RollerKostr\Downloads\29052017_libipriv_win\ActiveX\pubkeys.key",
@@ -19,7 +19,7 @@ namespace CyberPlatGate.Tests.Contracts
             CheckUrl  = @"https://ru-demo.cyberplat.com/cgi-bin/es/es_pay_check.cgi",
             PayUrl    = @"https://ru-demo.cyberplat.com/cgi-bin/es/es_pay.cgi",
             StatusUrl = @"https://ru-demo.cyberplat.com/cgi-bin/es/es_pay_status.cgi",
-            Timeout = TimeSpan.FromSeconds(90),
+            TimeoutSec = 90,
         };
 
         public static CyberPlatGateConfiguration GateConfiguration => new CyberPlatGateConfiguration()

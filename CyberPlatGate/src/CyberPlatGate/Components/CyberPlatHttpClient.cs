@@ -13,20 +13,20 @@ namespace CyberPlatGate.Components
         private Uri PayUrl { get; }
         private Uri StatusUrl { get; }
 
-        private readonly ICyberPlatHttpClientRequestBuilder m_Builder;
+        private readonly ICyberPlatSignatureManager m_Manager;
         private readonly HttpClient m_HttpClient;
 
-        public CyberPlatHttpClient(ICyberPlatHttpClientRequestBuilder builder, CyberPlatHttpClientConfiguration configuration, HttpMessageHandler handler = null)
+        public CyberPlatHttpClient(ICyberPlatSignatureManager manager, CyberPlatHttpClientConfiguration configuration, HttpMessageHandler handler = null)
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
-            m_Builder = builder;
+            if (manager == null) throw new ArgumentNullException(nameof(manager));
+            m_Manager = manager;
 
             CheckUrl = ValidateUrl(configuration.CheckUrl);
             PayUrl = ValidateUrl(configuration.PayUrl);
             StatusUrl = ValidateUrl(configuration.StatusUrl);
 
             m_HttpClient = handler != null ? new HttpClient(handler) : new HttpClient();
-            m_HttpClient.Timeout = configuration.Timeout;
+            m_HttpClient.Timeout = TimeSpan.FromSeconds(configuration.TimeoutSec);
         }
 
         public async Task<CheckResponse> Send(CheckRequest request)
@@ -48,11 +48,11 @@ namespace CyberPlatGate.Components
 
         private async Task<TRes> sendCore<TReq, TRes>(Uri url, TReq request) where TRes : new()
         {
-            var signedData = m_Builder.Build(request);
+            var signedData = m_Manager.Sign(request);
             var responseTxt = await post(url, signedData).ConfigureAwait(false);
-            m_Builder.Verify(responseTxt);
+            m_Manager.Verify(responseTxt);
 
-            return m_Builder.Parse<TRes>(responseTxt);
+            return m_Manager.Parse<TRes>(responseTxt);
         }
 
         private async Task<string> post(Uri url, string data)

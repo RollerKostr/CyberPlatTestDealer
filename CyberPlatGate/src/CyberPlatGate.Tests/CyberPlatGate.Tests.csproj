@@ -100,11 +100,11 @@
     <None Include="Resources\secret.key" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Components\CyberPlatHttpClientRequestBuilderTests.cs" />
+    <Compile Include="Components\CyberPlatSignatureManagerTests.cs" />
     <Compile Include="Components\CyberPlatHttpClientTests.cs" />
     <Compile Include="Contracts\TestConfigurations.cs" />
     <Compile Include="Contracts\ValidContracts.cs" />
-    <Compile Include="CyberPlatGateTests.cs" />
+    <Compile Include="CyberPlatGateIntegrationalTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>

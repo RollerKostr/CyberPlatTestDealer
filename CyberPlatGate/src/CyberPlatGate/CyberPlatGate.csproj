@@ -72,10 +72,10 @@
     <Compile Include="..\libipriv\libipriv.cs">
       <Link>ThirdParty\libipriv.cs</Link>
     </Compile>
-    <Compile Include="Components\CyberPlatHttpClientRequestBuilder.cs" />
-    <Compile Include="Contracts\Configurations\CyberPlatHttpClientRequestBuilderConfiguration.cs" />
+    <Compile Include="Components\CyberPlatSignatureManager.cs" />
+    <Compile Include="Contracts\Configurations\CyberPlatSignatureManagerConfiguration.cs" />
     <Compile Include="Components\ICyberPlatHttpClient.cs" />
-    <Compile Include="Components\ICyberPlatHttpClientRequestBuilder.cs" />
+    <Compile Include="Components\ICyberPlatSignatureManager.cs" />
     <Compile Include="Components\Utility\ConsoleLoggingHttpHandler.cs" />
     <Compile Include="Components\Utility\RandomStringGenerator.cs" />
     <Compile Include="Contracts\Configurations\CyberPlatHttpClientConfiguration.cs" />

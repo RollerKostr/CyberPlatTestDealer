@@ -9,14 +9,14 @@ namespace CyberPlatGate.Tests
 {
     [TestFixture]
     [Ignore("Integrational")]
-    class CyberPlatGateTests
+    class CyberPlatGateIntegrationalTests
     {
         private readonly ICyberPlatGate m_Gate;
 
-        public CyberPlatGateTests()
+        public CyberPlatGateIntegrationalTests()
         {
-            var builder = new CyberPlatHttpClientRequestBuilder(TestConfigurations.BuilderConfiguration);
-            var client = new CyberPlatHttpClient(builder, TestConfigurations.ClientConfiguration);
+            var manager = new CyberPlatSignatureManager(TestConfigurations.ManagerConfiguration);
+            var client = new CyberPlatHttpClient(manager, TestConfigurations.ClientConfiguration);
             m_Gate = new CyberPlatGate(client, TestConfigurations.GateConfiguration);
         }
 
@@ -78,6 +78,9 @@ namespace CyberPlatGate.Tests
                 TransId = gatePayResponse.TransId,
             };
             var gateStatusResponse = await m_Gate.Status(gateStatusRequest).ConfigureAwait(false);
+
+            gateStatusResponse.Error.Should().BeNull();
+            gateStatusResponse.Status.Code.Should().Be(7);
         }
     }
 }

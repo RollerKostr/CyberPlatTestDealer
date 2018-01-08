@@ -8,6 +8,6 @@ namespace CyberPlatGate.Contracts.Configurations
         public string PayUrl { get; set; }
         public string StatusUrl { get; set; }
 
-        public TimeSpan Timeout { get; set; }
+        public int TimeoutSec { get; set; }
     }
 }
