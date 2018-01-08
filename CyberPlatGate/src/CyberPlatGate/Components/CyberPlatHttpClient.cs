@@ -16,14 +16,14 @@ namespace CyberPlatGate.Components
         private readonly ICyberPlatHttpClientRequestBuilder m_Builder;
         private readonly HttpClient m_HttpClient;
 
-        public CyberPlatHttpClient(CyberPlatHttpClientConfiguration configuration, ICyberPlatHttpClientRequestBuilder builder, HttpMessageHandler handler = null)
+        public CyberPlatHttpClient(ICyberPlatHttpClientRequestBuilder builder, CyberPlatHttpClientConfiguration configuration, HttpMessageHandler handler = null)
         {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            m_Builder = builder;
+
             CheckUrl = ValidateUrl(configuration.CheckUrl);
             PayUrl = ValidateUrl(configuration.PayUrl);
             StatusUrl = ValidateUrl(configuration.StatusUrl);
-
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
-            m_Builder = builder;
 
             m_HttpClient = handler != null ? new HttpClient(handler) : new HttpClient();
             m_HttpClient.Timeout = configuration.Timeout;

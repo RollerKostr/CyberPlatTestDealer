@@ -79,6 +79,9 @@
     <Compile Include="Components\Utility\ConsoleLoggingHttpHandler.cs" />
     <Compile Include="Components\Utility\RandomStringGenerator.cs" />
     <Compile Include="Contracts\Configuration\CyberPlatHttpClientConfiguration.cs" />
+    <Compile Include="Contracts\Gate\Error.cs" />
+    <Compile Include="Contracts\Gate\GateResponse.cs" />
+    <Compile Include="Contracts\Gate\GateCheckRequest.cs" />
     <Compile Include="Contracts\Http\LimitsRequest.cs" />
     <Compile Include="Contracts\Http\StatusRequest.cs" />
     <Compile Include="Contracts\Http\PayRequest.cs" />
@@ -86,11 +89,17 @@
     <Compile Include="Contracts\Http\StatusResponse.cs" />
     <Compile Include="Contracts\Http\PayResponse.cs" />
     <Compile Include="Contracts\Http\CheckResponse.cs" />
+    <Compile Include="Contracts\Configuration\CyberPlatGateConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Components\CyberPlatHttpClient.cs" />
     <Compile Include="Contracts\Http\CheckRequest.cs" />
     <Compile Include="CyberPlatGate.cs" />
     <Compile Include="ICyberPlatGate.cs" />
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Windsor\" />
@@ -104,6 +113,12 @@
       <TargetPath>libipriv.dll</TargetPath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </ContentWithTargetPath>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
