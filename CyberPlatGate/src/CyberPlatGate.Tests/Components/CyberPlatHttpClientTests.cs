@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CyberPlatGate.Components;
 using CyberPlatGate.Components.Utility;
-using CyberPlatGate.Contracts.Configuration;
-using CyberPlatGate.Contracts.Http;
 using CyberPlatGate.Tests.Contracts;
 using FluentAssertions;
 using NUnit.Framework;
@@ -46,11 +43,12 @@ namespace CyberPlatGate.Tests.Components
                 var handler = new ConsoleLoggingHttpHandler();
                 var client = new CyberPlatHttpClient(ValidContracts.ClientConfiguration, builder, handler);
 
-                var checkResponse = await client.Send(ValidContracts.CheckRequest).ConfigureAwait(false);
+                var checkRequest = ValidContracts.GenerateCheckRequest();
+                var checkResponse = await client.Send(checkRequest).ConfigureAwait(false);
                 if (checkResponse.RESULT != "0" && checkResponse.ERROR != "0")
                     throw new Exception("Server returns response with error.");
 
-                var payResponse = await client.Send(ValidContracts.PayRequest(ValidContracts.CheckRequest)).ConfigureAwait(false);
+                var payResponse = await client.Send(ValidContracts.GeneratePayRequest(checkRequest)).ConfigureAwait(false);
             }
         }
 

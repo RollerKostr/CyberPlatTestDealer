@@ -25,27 +25,30 @@ namespace CyberPlatGate.Tests.Contracts
             StatusUrl = @"https://ru-demo.cyberplat.com/cgi-bin/es/es_pay_status.cgi",
         };
 
-        public static CheckRequest CheckRequest => new CheckRequest()
+        public static CheckRequest GenerateCheckRequest()
         {
-            SD = "17031",
-            AP = "17032",
-            OP = "17034",
-            DATE = DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"),
-            SESSION = RandomStringGenerator.GenerateAlphaNumericString(20, Rng),
-            NUMBER = "9261112233",
-            ACCOUNT = null,
-            AMOUNT = "1234.56",
-            AMOUNT_ALL = "1249.99",
-            REQ_TYPE = "0",
-            PAY_TOOL = "0",
-            TERM_ID = null,
-            //COMMENT = "TEST Кириллица TEST 0123456789", // CyberPlat not supports cyrillic even if I urlencode in cp1521
-            COMMENT = "TEST 0123456789",
-            ACCEPT_KEYS = BuilderConfiguration.PublicKeySerial,
-            NO_ROUTE = "1",
-        };
+            return new CheckRequest()
+            {
+                SD = "17031",
+                AP = "17032",
+                OP = "17034",
+                DATE = DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"),
+                SESSION = RandomStringGenerator.GenerateAlphaNumericString(20, Rng),
+                NUMBER = "9261112233",
+                ACCOUNT = null,
+                AMOUNT = "1234.56",
+                AMOUNT_ALL = "1249.99",
+                REQ_TYPE = "0",
+                PAY_TOOL = "0",
+                TERM_ID = null,
+                //COMMENT = "TEST Кириллица TEST 0123456789", // CyberPlat not supports cyrillic even if I urlencode in cp1521
+                COMMENT = "TEST 0123456789",
+                ACCEPT_KEYS = BuilderConfiguration.PublicKeySerial,
+                NO_ROUTE = "1",
+            };
+        }
 
-        public static PayRequest PayRequest(CheckRequest checkRequest)
+        public static PayRequest GeneratePayRequest(CheckRequest checkRequest)
         {
             return new PayRequest()
             {

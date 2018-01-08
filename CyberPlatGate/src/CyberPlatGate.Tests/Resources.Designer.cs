@@ -81,26 +81,59 @@ namespace CyberPlatGate.Tests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 0000032701SM000000660000006600000125
+        ///   Looks up a localized string similar to 0000043801SM000001770000017700000125
         ///0J0005              00064182
         ///                    00000000
         ///BEGIN
-        ///DATE=07.01.2018 22:52:34
-        ///SESSION=
-        ///ERROR=10
-        ///RESULT=1
+        ///DATE=08.01.2018 12:54:21
+        ///SESSION=mRdRr5lqY3TaZwbSweOX
+        ///ERROR=0
+        ///RESULT=0
+        ///OPNAME=
+        ///ACCOUNT=
+        ///ERRMSG=
+        ///AUTHCODE=
         ///TRANSID=
+        ///REST=99999308910842.25
+        ///GATEWAY_IN=9
+        ///GATEWAY_OUT=9
         ///
         ///END
         ///BEGIN SIGNATURE
-        ///iQBRAwkBAAD6tlpSeoIBAZGTAgDIHxCXB7CGQrzj6BF0sHvhRk1ZX6FKKT7UZ/T+
-        ///NwSREzpSVYGoxGQLo0m9Cop4IZ0JOyIe1f/RonfmAChWmof5sAHH
-        ///=mM3I
+        ///iQBRAwkBAAD6tlpTP80BAbvnAfsEdCFUJo/uhPTtWqnvSi9IeiFo/u1Nk4xEkqXQ
+        ///tn4ZZczWP/x43x9tSk/unQc1ywg70bP8rJIkDq7QUyT1iaW8sAHH
+        ///=qRgr
         ///END SIGNATURE.
         /// </summary>
         internal static string ServerCheckResponse {
             get {
                 return ResourceManager.GetString("ServerCheckResponse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 0000038801SM000001270000012700000125
+        ///0J0005              00064182
+        ///                    00000000
+        ///BEGIN
+        ///DATE=08.01.2018 16:04:25
+        ///SESSION=rYuD8SkcMq3fX92fSild
+        ///ERROR=0
+        ///RESULT=0
+        ///TRANSID=1000010856873
+        ///GATEWAY_IN=9
+        ///GATEWAY_OUT=9
+        ///
+        ///END
+        ///BEGIN SIGNATURE
+        ///iQBRAwkBAAD6tlpTbFkBAYLrAgDCXaFN5iwZ30ER9v3QZ3iwQiTMsjWrlVm4Yuf1
+        ///a67TXiHQ0CmCvw/baaC4MIrSCk+ri4+Ic49qh2+TsjP6FbiAsAHH
+        ///=4LiN
+        ///END SIGNATURE.
+        /// </summary>
+        internal static string ServerPayResponse {
+            get {
+                return ResourceManager.GetString("ServerPayResponse", resourceCulture);
             }
         }
     }

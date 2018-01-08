@@ -67,11 +67,12 @@ namespace CyberPlatGate.Tests.Components
         }
 
         [Test]
-        public void VerifyTest()
+        [TestCaseSource(nameof(ValidResponses))]
+        public void VerifyTest(string responseStr, string typeName)
         {
             using (var builder = new CyberPlatHttpClientRequestBuilder(TestConf))
             {
-                Action action = () => { builder.Verify(Resources.ServerCheckResponse); };
+                Action action = () => { builder.Verify(responseStr); };
                 action.ShouldNotThrow<CryptographicException>();
             }
         }
@@ -108,8 +109,8 @@ namespace CyberPlatGate.Tests.Components
         {
             get
             {
-                yield return ValidContracts.CheckRequest;
-                yield return ValidContracts.PayRequest(ValidContracts.CheckRequest);
+                yield return ValidContracts.GenerateCheckRequest();
+                yield return ValidContracts.GeneratePayRequest(ValidContracts.GenerateCheckRequest());
                 // TODO[mk] Add another requests
             }
         }
@@ -119,6 +120,7 @@ namespace CyberPlatGate.Tests.Components
             get
             {
                 yield return new object[] { Resources.ServerCheckResponse, nameof(CheckResponse) };
+                yield return new object[] { Resources.ServerPayResponse, nameof(PayResponse) };
                 // TODO[mk] Add another responses
             }
         }
