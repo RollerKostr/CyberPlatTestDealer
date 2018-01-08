@@ -75,6 +75,8 @@
     <Compile Include="Components\CyberPlatHttpClientRequestBuilder.cs" />
     <Compile Include="Components\ICyberPlatHttpClient.cs" />
     <Compile Include="Components\ICyberPlatHttpClientRequestBuilder.cs" />
+    <Compile Include="Components\Utility\ConsoleLoggingHttpHandler.cs" />
+    <Compile Include="Components\Utility\RandomStringGenerator.cs" />
     <Compile Include="Contracts\Configuration\CyberPlatHttpClientConfiguration.cs" />
     <Compile Include="Contracts\Http\LimitsRequest.cs" />
     <Compile Include="Contracts\Http\StatusRequest.cs" />

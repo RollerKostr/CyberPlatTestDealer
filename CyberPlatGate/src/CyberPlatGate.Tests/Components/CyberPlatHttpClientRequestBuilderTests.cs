@@ -2,7 +2,7 @@
 using System.IO;
 using System.Security.Cryptography;
 using CyberPlatGate.Components;
-using CyberPlatGate.Contracts.Http;
+using CyberPlatGate.Tests.Contracts;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -16,8 +16,6 @@ namespace CyberPlatGate.Tests.Components
         private static readonly string PubKeyPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "pub.txt");
         private const string SEC_KEY_PASSWORD = "1111111111";
         private const string PUB_KEY_SERIAL = "17033";
-
-        private ICyberPlatHttpClientRequestBuilder m_Builder;
 
         [OneTimeSetUp]
         public void SetUp()
@@ -51,7 +49,7 @@ namespace CyberPlatGate.Tests.Components
         {
             using (var builder = new CyberPlatHttpClientRequestBuilder(SecKeyPath, PubKeyPath, SEC_KEY_PASSWORD, PUB_KEY_SERIAL))
             {
-                var result = builder.Build(ValidCheckRequest);
+                var result = builder.Build(ValidContracts.CheckRequest);
             }
         }
 
@@ -64,24 +62,5 @@ namespace CyberPlatGate.Tests.Components
                 action.ShouldNotThrow<CryptographicException>();
             }
         }
-
-        private static CheckRequest ValidCheckRequest => new CheckRequest()
-        {
-            SD = "17031",
-            AP = "17032",
-            OP = "17034",
-            DATE = DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"),
-            SESSION = Guid.NewGuid().ToString("N"), // TODO[mk] Implement random string(20) generator
-            NUMBER = "9261112233",
-            ACCOUNT = null,
-            AMOUNT = "1234.56",
-            AMOUNT_ALL = "1249.99",
-            REQ_TYPE = "1",
-            PAY_TOOL = "0",
-            TERM_ID = null,
-            COMMENT = "test test 0123456789",
-            ACCEPT_KEYS = "64182",
-            NO_ROUTE = "1",
-        };
     }
 }

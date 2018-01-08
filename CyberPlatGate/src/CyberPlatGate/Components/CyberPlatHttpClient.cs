@@ -18,16 +18,19 @@ namespace CyberPlatGate.Components
         private Uri StatusUrl { get; }
 
         private readonly ICyberPlatHttpClientRequestBuilder m_Builder;
-        private static readonly HttpClient m_HttpClient = new HttpClient();
+        private readonly HttpClient m_HttpClient;
 
-        public CyberPlatHttpClient(CyberPlatHttpClientConfiguration configuration, ICyberPlatHttpClientRequestBuilder builder)
+        public CyberPlatHttpClient(CyberPlatHttpClientConfiguration configuration, ICyberPlatHttpClientRequestBuilder builder, HttpMessageHandler handler = null)
         {
+            CheckUrl = ValidateUrl(configuration.CheckUrl);
+            PayUrl = ValidateUrl(configuration.PayUrl);
+            StatusUrl = ValidateUrl(configuration.StatusUrl);
+
             if (builder == null) throw new ArgumentNullException(nameof(builder));
             m_Builder = builder;
 
-            CheckUrl  = ValidateUrl(configuration.CheckUrl);
-            PayUrl    = ValidateUrl(configuration.PayUrl);
-            StatusUrl = ValidateUrl(configuration.StatusUrl);
+            m_HttpClient = handler != null ? new HttpClient(handler) : new HttpClient();
+            m_HttpClient.Timeout = TimeSpan.FromSeconds(90);
         }
 
         public async Task<CheckResponse> Send(CheckRequest request)
