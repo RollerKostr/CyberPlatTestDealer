@@ -21,9 +21,9 @@ namespace CyberPlatGate.Components
             if (manager == null) throw new ArgumentNullException(nameof(manager));
             m_Manager = manager;
 
-            CheckUrl = ValidateUrl(configuration.CheckUrl);
-            PayUrl = ValidateUrl(configuration.PayUrl);
-            StatusUrl = ValidateUrl(configuration.StatusUrl);
+            CheckUrl  = validateUrl(configuration.CheckUrl);
+            PayUrl    = validateUrl(configuration.PayUrl);
+            StatusUrl = validateUrl(configuration.StatusUrl);
 
             m_HttpClient = handler != null ? new HttpClient(handler) : new HttpClient();
             m_HttpClient.Timeout = TimeSpan.FromSeconds(configuration.TimeoutSec);
@@ -67,8 +67,7 @@ namespace CyberPlatGate.Components
             return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
-        // TODO[mk] make private
-        public static Uri ValidateUrl(string urlStr)
+        private static Uri validateUrl(string urlStr)
         {
             Uri resultUri;
             if (!Uri.TryCreate(urlStr, UriKind.Absolute, out resultUri)

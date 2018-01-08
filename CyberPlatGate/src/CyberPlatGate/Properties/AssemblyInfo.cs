@@ -33,3 +33,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("1.0.0.0")]
 
 [assembly: InternalsVisibleTo("CyberPlatGate.Tests")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")] // For NSubstitute

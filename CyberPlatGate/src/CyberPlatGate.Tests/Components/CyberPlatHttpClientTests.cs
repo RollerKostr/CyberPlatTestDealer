@@ -1,8 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using CyberPlatGate.Components;
+using CyberPlatGate.Contracts.Configurations;
+using CyberPlatGate.Contracts.Http;
+using CyberPlatGate.Tests.Contracts;
 using FluentAssertions;
+using NSubstitute;
+using NSubstitute.ClearExtensions;
 using NUnit.Framework;
 
 namespace CyberPlatGate.Tests.Components
@@ -10,40 +17,64 @@ namespace CyberPlatGate.Tests.Components
     [TestFixture]
     class CyberPlatHttpClientTests
     {
-        //TODO[mk] mock manager with NSubstitute and write good unit-tests
+        private readonly ICyberPlatSignatureManager m_ManagerMock = Substitute.For<ICyberPlatSignatureManager>();
+        private readonly ICyberPlatHttpClient m_Client;
+
+        public CyberPlatHttpClientTests()
+        {
+            var dummyConf = new CyberPlatHttpClientConfiguration()
+            {
+                CheckUrl  = @"http://google.com",
+                PayUrl    = @"http://google.com",
+                StatusUrl = @"http://google.com",
+                TimeoutSec = 10,
+            };
+            m_Client = new CyberPlatHttpClient(m_ManagerMock, dummyConf);
+        }
 
         [Test]
-        [TestCaseSource(nameof(ValidUrls), Category = nameof(ValidUrls))]
-        [TestCaseSource(nameof(InvalidUrls), Category = nameof(InvalidUrls))]
-        // TODO[mk] change to InitTest() and make ValidateUrl() private
-        public void UrlTest(string url)
+        [TestCaseSource(typeof(CyberPlatHttpClientTests), nameof(ConfigurationTestCases))]
+        public void InitializingTest(CyberPlatHttpClientConfiguration conf, bool shouldSucceed)
         {
-            Action action = () => { var uri = CyberPlatHttpClient.ValidateUrl(url); };
-            var cat = (string) TestContext.CurrentContext.Test.Properties.Get("Category");
-
-            switch (cat)
+            Action action = () =>
             {
-                case nameof(ValidUrls):
-                    action.ShouldNotThrow<ArgumentException>();
-                    break;
-                case nameof(InvalidUrls):
-                    action.ShouldThrow<ArgumentException>();
-                    break;
-            }
+                var client = new CyberPlatHttpClient(m_ManagerMock, conf);
+            };
+
+            if (shouldSucceed)
+                action.ShouldNotThrow<ArgumentException>();
+            else
+                action.ShouldThrow<ArgumentException>();
+        }
+
+        [Test]
+        [Ignore("Can not mock HttpClient, will perform real calls to URL")]
+        public async Task SendTest()
+        {
+            var request = new CheckRequest();
+
+            m_ManagerMock.ClearSubstitute();
+            m_ManagerMock.Sign(request).Returns(request.GetType().Name);
+            m_ManagerMock.Parse<CheckRequest>(null).ReturnsForAnyArgs((CheckRequest)null);
+
+            var response = await m_Client.Send(request).ConfigureAwait(false);
+
+            Received.InOrder(() =>
+            {
+                m_ManagerMock.Sign(request);
+                m_ManagerMock.Verify(Arg.Any<string>());
+                m_ManagerMock.Parse<CheckResponse>(Arg.Any<string>());
+            });
         }
 
         #region Test cases
 
-        private static IEnumerable<string> ValidUrls
+        public static IEnumerable ConfigurationTestCases
         {
             get
             {
-                yield return @"http://ru-demo.cyberplat.com/cgi-bin/DealerSertification/de_pay_check.cgi";
-				yield return @"http://ru-demo.cyberplat.com/cgi-bin/DealerSertification/de_pay.cgi";
-				yield return @"http://ru-demo.cyberplat.com/cgi-bin/DealerSertification/de_pay_status.cgi";
-				yield return @"https://ru-demo.cyberplat.com/cgi-bin/DealerSertification/de_pay_check.cgi";
-				yield return @"https://ru-demo.cyberplat.com/cgi-bin/DealerSertification/de_pay.cgi";
-				yield return @"https://ru-demo.cyberplat.com/cgi-bin/DealerSertification/de_pay_status.cgi";
+                return new[] {new TestCaseData(TestConfigurations.ClientConfiguration, true)}.Concat(
+                    InvalidUrls.Select(url => new TestCaseData(new CyberPlatHttpClientConfiguration() {CheckUrl = url}, false)));
             }
         }
 
@@ -52,8 +83,8 @@ namespace CyberPlatGate.Tests.Components
             get
             {
                 yield return @"http:ru-demo.cyberplat.com/cgi-bin/DealerSertification/de_pay_check.cgi";
-				yield return @"/cgi-bin/DealerSertification/de_pay.cgi";
-				yield return @"htttttp://ru-demo.cyberplat.com/cgi-bin/DealerSertification/de_pay_status.cgi";
+                yield return @"/cgi-bin/DealerSertification/de_pay.cgi";
+                yield return @"htttttp://ru-demo.cyberplat.com/cgi-bin/DealerSertification/de_pay_status.cgi";
                 yield return @"http://";
                 yield return @"abcdef";
             }
