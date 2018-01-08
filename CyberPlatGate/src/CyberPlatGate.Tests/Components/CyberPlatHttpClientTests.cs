@@ -39,13 +39,10 @@ namespace CyberPlatGate.Tests.Components
         //[Ignore("Integrational")]
         public async Task CheckTest()
         {
-            using (var builder = new CyberPlatHttpClientRequestBuilder(
-                @"C:\Users\RollerKostr\Downloads\29052017_libipriv_win\ActiveX\secret.key",
-                @"C:\Users\RollerKostr\Downloads\29052017_libipriv_win\ActiveX\pubkeys.key",
-                "1111111111", "17033"))
+            using (var builder = new CyberPlatHttpClientRequestBuilder(ValidContracts.BuilderConfiguration))
             {
                 var handler = new ConsoleLoggingHttpHandler();
-                var client = new CyberPlatHttpClient(ValidContracts.HttpClientConfiguration, builder, handler);
+                var client = new CyberPlatHttpClient(ValidContracts.ClientConfiguration, builder, handler);
 
                 var response = await client.Send(ValidContracts.CheckRequest);
             }

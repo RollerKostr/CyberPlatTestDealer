@@ -10,25 +10,26 @@ using org.CyberPlat;
 
 namespace CyberPlatGate.Components
 {
+    class CyberPlatHttpClientRequestBuilderConfiguration
+    {
+        public string SecretKeyPath { get; set; }
+        public string PublicKeyPath { get; set; }
+        public string SecretKeyPassword { get; set; }
+        public string PublicKeySerial { get; set; }
+    }
+
     class CyberPlatHttpClientRequestBuilder : ICyberPlatHttpClientRequestBuilder, IDisposable
     {
-        private string SecretKeyPath { get; }
-        private string PublicKeyPath { get; }
-        private string SecretKeyPassword { get; }
-        private string PublicKeySerial { get; }
+        private readonly CyberPlatHttpClientRequestBuilderConfiguration m_Conf;
 
-        public CyberPlatHttpClientRequestBuilder(string secretKeyPath, string publicKeyPath, string secretKeyPassword, string publicKeySerial)
+        // TODO[mk] encapsulate all parameters into separate class
+        public CyberPlatHttpClientRequestBuilder(CyberPlatHttpClientRequestBuilderConfiguration configuration)
         {
-            checkKeyPath(secretKeyPath);
-            checkKeyPath(publicKeyPath);
-
-            SecretKeyPath = secretKeyPath;
-            PublicKeyPath = publicKeyPath;
-
-            SecretKeyPassword = secretKeyPassword;
-            PublicKeySerial = publicKeySerial;
-
+            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+            m_Conf = configuration;
+            
             IPriv.Initialize();
+
             checkKeys(); // Fail-fast
         }
 
@@ -63,7 +64,7 @@ namespace CyberPlatGate.Components
             IPrivKey secretKey = null;
             try
             {
-                secretKey = IPriv.openSecretKey(SecretKeyPath, SecretKeyPassword);
+                secretKey = IPriv.openSecretKey(m_Conf.SecretKeyPath, m_Conf.SecretKeyPassword);
                 return secretKey.signText(inputText);
             }
             catch (IPrivException err)
@@ -81,7 +82,7 @@ namespace CyberPlatGate.Components
             IPrivKey publicKey = null;
             try
             {
-                publicKey = IPriv.openPublicKey(PublicKeyPath, Convert.ToUInt32(PublicKeySerial, 10));
+                publicKey = IPriv.openPublicKey(m_Conf.PublicKeyPath, Convert.ToUInt32(m_Conf.PublicKeySerial, 10));
                 publicKey.verifyText(inputText); // If this step is successfull, then signature is valid
             }
             catch (IPrivException err)
@@ -94,21 +95,26 @@ namespace CyberPlatGate.Components
             }
         }
 
+        
+
+        /// <summary>Fail-fast checking of keys opening.</summary>
+        private void checkKeys()
+        {
+            checkKeyPath(m_Conf.SecretKeyPath);
+            checkKeyPath(m_Conf.PublicKeyPath);
+
+            var secretKey = IPriv.openSecretKey(m_Conf.SecretKeyPath, m_Conf.SecretKeyPassword);
+            var publicKey = IPriv.openPublicKey(m_Conf.PublicKeyPath, Convert.ToUInt32(m_Conf.PublicKeySerial, 10));
+            secretKey?.closeKey();
+            publicKey?.closeKey();
+        }
+
         private static void checkKeyPath(string keyPath)
         {
             if (string.IsNullOrWhiteSpace(keyPath))
                 throw new ArgumentNullException($"Invalid path specified for {nameof(CyberPlatHttpClientRequestBuilder)}. Passed value is '{keyPath}'.", nameof(keyPath));
             if (!File.Exists(keyPath))
                 throw new ArgumentException($"There is no file by specified path '{keyPath}'", nameof(keyPath));
-        }
-
-        /// <summary>Fail-fast checking of keys opening.</summary>
-        private void checkKeys()
-        {
-            var secretKey = IPriv.openSecretKey(SecretKeyPath, SecretKeyPassword);
-            var publicKey = IPriv.openPublicKey(PublicKeyPath, Convert.ToUInt32(PublicKeySerial, 10));
-            secretKey?.closeKey();
-            publicKey?.closeKey();
         }
 
         private static Dictionary<string, string> toDictionary<T>(T @object)

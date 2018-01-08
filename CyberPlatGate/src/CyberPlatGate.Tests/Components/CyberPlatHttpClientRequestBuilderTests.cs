@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using CyberPlatGate.Components;
@@ -11,24 +13,30 @@ namespace CyberPlatGate.Tests.Components
     [TestFixture]
     class CyberPlatHttpClientRequestBuilderTests
     {
-        // Required for NUnit v3.0+
-        private static readonly string SecKeyPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "sec.txt");
-        private static readonly string PubKeyPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "pub.txt");
-        private const string SEC_KEY_PASSWORD = "1111111111";
-        private const string PUB_KEY_SERIAL = "17033";
+        private static CyberPlatHttpClientRequestBuilderConfiguration TestConf
+        {
+            get
+            {
+                var validConf = ValidContracts.BuilderConfiguration;
+                // Required for NUnit v3.0+ due to different working folder
+                validConf.SecretKeyPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "sec.txt");
+                validConf.PublicKeyPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "pub.txt");
+                return validConf;
+            }
+        }
 
         [OneTimeSetUp]
         public void SetUp()
         {
-            File.WriteAllBytes(PubKeyPath, Resources.pubkeys);
-            File.WriteAllBytes(SecKeyPath, Resources.secret);
+            File.WriteAllBytes(TestConf.SecretKeyPath, Resources.secret);
+            File.WriteAllBytes(TestConf.PublicKeyPath, Resources.pubkeys);
         }
 
         [OneTimeTearDown]
         public void TearDown()
         {
-            File.Delete(PubKeyPath);
-            File.Delete(SecKeyPath);
+            File.Delete(TestConf.SecretKeyPath);
+            File.Delete(TestConf.PublicKeyPath);
         }
 
         [Test]
@@ -36,7 +44,7 @@ namespace CyberPlatGate.Tests.Components
         {
             Action action = () =>
             {
-                using (var builder = new CyberPlatHttpClientRequestBuilder(SecKeyPath, PubKeyPath, SEC_KEY_PASSWORD, PUB_KEY_SERIAL))
+                using (var builder = new CyberPlatHttpClientRequestBuilder(TestConf))
                 {
                 }
             };
@@ -45,22 +53,37 @@ namespace CyberPlatGate.Tests.Components
         }
 
         [Test]
-        public void BuildTest()
+        [TestCaseSource(nameof(ValidRequests))]
+        public void BuildTest(dynamic request)
         {
-            using (var builder = new CyberPlatHttpClientRequestBuilder(SecKeyPath, PubKeyPath, SEC_KEY_PASSWORD, PUB_KEY_SERIAL))
+            using (var builder = new CyberPlatHttpClientRequestBuilder(TestConf))
             {
-                var result = builder.Build(ValidContracts.CheckRequest);
+                Action action = () => { var result = builder.Build(request); };
+                action.ShouldNotThrow();
             }
         }
 
         [Test]
         public void VerifyTest()
         {
-            using (var builder = new CyberPlatHttpClientRequestBuilder(SecKeyPath, PubKeyPath, SEC_KEY_PASSWORD, PUB_KEY_SERIAL))
+            using (var builder = new CyberPlatHttpClientRequestBuilder(TestConf))
             {
                 Action action = () => { builder.Verify(Resources.ServerCheckResponse); };
                 action.ShouldNotThrow<CryptographicException>();
             }
         }
+
+        #region Test cases
+
+        private static IEnumerable<object> ValidRequests
+        {
+            get
+            {
+                yield return ValidContracts.CheckRequest;
+
+            }
+        }
+
+        #endregion Test cases
     }
 }

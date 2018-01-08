@@ -10,11 +10,19 @@ namespace CyberPlatGate.Tests.Contracts
     {
         public static readonly Random Rng = new Random();
 
-        public static CyberPlatHttpClientConfiguration HttpClientConfiguration => new CyberPlatHttpClientConfiguration()
+        public static CyberPlatHttpClientRequestBuilderConfiguration BuilderConfiguration => new CyberPlatHttpClientRequestBuilderConfiguration()
         {
-            CheckUrl  = @"http://ru-demo.cyberplat.com/cgi-bin/DealerSertification/de_pay_check.cgi",
-            PayUrl    = @"http://ru-demo.cyberplat.com/cgi-bin/DealerSertification/de_pay.cgi",
-            StatusUrl = @"http://ru-demo.cyberplat.com/cgi-bin/DealerSertification/de_pay_status.cgi",
+            SecretKeyPath = @"C:\Users\RollerKostr\Downloads\29052017_libipriv_win\ActiveX\secret.key",
+            PublicKeyPath = @"C:\Users\RollerKostr\Downloads\29052017_libipriv_win\ActiveX\pubkeys.key",
+            SecretKeyPassword = @"1111111111",
+            PublicKeySerial = @"64182",
+        };
+
+        public static CyberPlatHttpClientConfiguration ClientConfiguration => new CyberPlatHttpClientConfiguration()
+        {
+            CheckUrl  = @"https://ru-demo.cyberplat.com/cgi-bin/es/es_pay_check.cgi",
+            PayUrl    = @"https://ru-demo.cyberplat.com/cgi-bin/es/es_pay.cgi",
+            StatusUrl = @"https://ru-demo.cyberplat.com/cgi-bin/es/es_pay_status.cgi",
         };
 
         public static CheckRequest CheckRequest => new CheckRequest()
