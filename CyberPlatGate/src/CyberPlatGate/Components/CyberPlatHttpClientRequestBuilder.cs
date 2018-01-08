@@ -5,47 +5,34 @@ using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web;
+using CyberPlatGate.Contracts.Configuration;
 using CyberPlatGate.Contracts.Http;
 using org.CyberPlat;
 
 namespace CyberPlatGate.Components
 {
-    class CyberPlatHttpClientRequestBuilderConfiguration
-    {
-        public string SecretKeyPath { get; set; }
-        public string PublicKeyPath { get; set; }
-        public string SecretKeyPassword { get; set; }
-        public string PublicKeySerial { get; set; }
-    }
-
     class CyberPlatHttpClientRequestBuilder : ICyberPlatHttpClientRequestBuilder, IDisposable
     {
-        private readonly CyberPlatHttpClientRequestBuilderConfiguration m_Conf;
+        private readonly CyberPlatHttpClientRequestBuilderConfiguration m_Configuration;
 
-        // TODO[mk] encapsulate all parameters into separate class
         public CyberPlatHttpClientRequestBuilder(CyberPlatHttpClientRequestBuilderConfiguration configuration)
         {
             if (configuration == null) throw new ArgumentNullException(nameof(configuration));
-            m_Conf = configuration;
+            m_Configuration = configuration;
             
             IPriv.Initialize();
 
             checkKeys(); // Fail-fast
         }
 
-        public string Build(CheckRequest request)
+        public string Build<T>(T request)
         {
-            return signText(buildCore(request));
-        }
-
-        public string Build(PayRequest request)
-        {
-            return signText(buildCore(request));
-        }
-
-        public string Build(StatusRequest request)
-        {
-            return signText(buildCore(request));
+            var dict = toDictionary(request);
+            var dataStr = string.Join("\r\n", dict.Select(kvp => kvp.Key + "=" + kvp.Value));
+            var signedText = signText(dataStr);
+            return signedText;
+            //return HttpUtility.UrlEncode(signedText, Encoding.GetEncoding(1251)); // Not working anyway (CybePlat API says it should)
         }
 
         public void Verify(string response)
@@ -53,10 +40,30 @@ namespace CyberPlatGate.Components
             verifyText(response); // should not throw any exception in case of success
         }
 
-        private static string buildCore<T>(T request)
+        public T Parse<T>(string response) where T : new()
         {
-            var dict = toDictionary(request);
-            return string.Join("\r\n", dict.Select(kvp => kvp.Key + "=" + kvp.Value));
+            const string BEGIN_STR = "BEGIN\r\n";
+            const string END_STR = "END\r\n";
+
+            var beginIdx = response.IndexOf(BEGIN_STR);
+            var endIdx = response.IndexOf(END_STR);
+            if (beginIdx == -1)
+                throw new HttpParseException($"Can not parse server response. 'BEGIN' word was not found. Response text:{Environment.NewLine}{response}");
+            if (endIdx == -1)
+                throw new HttpParseException($"Can not parse server response. 'END' word was not found. Response text:{Environment.NewLine}{response}");
+
+            var dataStr = response.Substring(beginIdx + BEGIN_STR.Length, endIdx - beginIdx - BEGIN_STR.Length);
+            var lines = dataStr.Split(new[] {"\r\n"}, StringSplitOptions.RemoveEmptyEntries);
+            var dict = new Dictionary<string, string>();
+            foreach (var line in lines)
+            {
+                var parts = line.Split('=');
+                if (parts.Length != 2)
+                    throw new HttpParseException($"Can not parse server response. Line '{line}' does not contain '=' char. Response text:{Environment.NewLine}{response}");
+                dict.Add(parts[0], Uri.UnescapeDataString(parts[1]));
+            }
+
+            return toObject<T>(dict);
         }
 
         private string signText(string inputText)
@@ -64,7 +71,7 @@ namespace CyberPlatGate.Components
             IPrivKey secretKey = null;
             try
             {
-                secretKey = IPriv.openSecretKey(m_Conf.SecretKeyPath, m_Conf.SecretKeyPassword);
+                secretKey = IPriv.openSecretKey(m_Configuration.SecretKeyPath, m_Configuration.SecretKeyPassword);
                 return secretKey.signText(inputText);
             }
             catch (IPrivException err)
@@ -82,7 +89,7 @@ namespace CyberPlatGate.Components
             IPrivKey publicKey = null;
             try
             {
-                publicKey = IPriv.openPublicKey(m_Conf.PublicKeyPath, Convert.ToUInt32(m_Conf.PublicKeySerial, 10));
+                publicKey = IPriv.openPublicKey(m_Configuration.PublicKeyPath, Convert.ToUInt32(m_Configuration.PublicKeySerial, 10));
                 publicKey.verifyText(inputText); // If this step is successfull, then signature is valid
             }
             catch (IPrivException err)
@@ -100,11 +107,11 @@ namespace CyberPlatGate.Components
         /// <summary>Fail-fast checking of keys opening.</summary>
         private void checkKeys()
         {
-            checkKeyPath(m_Conf.SecretKeyPath);
-            checkKeyPath(m_Conf.PublicKeyPath);
+            checkKeyPath(m_Configuration.SecretKeyPath);
+            checkKeyPath(m_Configuration.PublicKeyPath);
 
-            var secretKey = IPriv.openSecretKey(m_Conf.SecretKeyPath, m_Conf.SecretKeyPassword);
-            var publicKey = IPriv.openPublicKey(m_Conf.PublicKeyPath, Convert.ToUInt32(m_Conf.PublicKeySerial, 10));
+            var secretKey = IPriv.openSecretKey(m_Configuration.SecretKeyPath, m_Configuration.SecretKeyPassword);
+            var publicKey = IPriv.openPublicKey(m_Configuration.PublicKeyPath, Convert.ToUInt32(m_Configuration.PublicKeySerial, 10));
             secretKey?.closeKey();
             publicKey?.closeKey();
         }
@@ -122,6 +129,20 @@ namespace CyberPlatGate.Components
             return @object.GetType()
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public)
                 .ToDictionary(prop => prop.Name, prop => (string) prop.GetValue(@object, null));
+        }
+
+        private static T toObject<T>(Dictionary<string, string> dict)
+        {
+            var obj = Activator.CreateInstance(typeof(T));
+            foreach (var kvp in dict)
+            {
+                var prop = typeof(T).GetProperty(kvp.Key);
+                if (prop == null) continue;
+
+                prop.SetValue(obj, kvp.Value, null);
+            }
+
+            return (T) obj;
         }
 
         #region IDisposable

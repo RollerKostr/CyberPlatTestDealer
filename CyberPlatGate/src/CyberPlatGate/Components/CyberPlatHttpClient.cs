@@ -35,24 +35,29 @@ namespace CyberPlatGate.Components
 
         public async Task<CheckResponse> Send(CheckRequest request)
         {
-            var signedData = m_Builder.Build(request);
-            var responseTxt = await post(CheckUrl, signedData);
-            m_Builder.Verify(responseTxt);
-            // TODO[mk] Implement parsing
-            return await Task.FromResult(new CheckResponse());
+            return await sendCore<CheckRequest, CheckResponse>(CheckUrl, request);
         }
 
         public async Task<PayResponse> Send(PayRequest request)
         {
-            throw new NotImplementedException();
+            return await sendCore<PayRequest, PayResponse>(PayUrl, request);
         }
 
         public async Task<StatusResponse> Send(StatusRequest request)
         {
-            throw new NotImplementedException();
+            return await sendCore<StatusRequest, StatusResponse>(StatusUrl, request);
         }
 
 
+
+        private async Task<TRes> sendCore<TReq, TRes>(Uri url, TReq request) where TRes : new()
+        {
+            var signedData = m_Builder.Build(request);
+            var responseTxt = await post(url, signedData).ConfigureAwait(false);
+            m_Builder.Verify(responseTxt);
+
+            return m_Builder.Parse<TRes>(responseTxt);
+        }
 
         private async Task<string> post(Uri url, string data)
         {
@@ -61,9 +66,9 @@ namespace CyberPlatGate.Components
                 { "inputmessage", data },
             };
 
-            var response = await m_HttpClient.PostAsync(url, new FormUrlEncodedContent(values));
+            var response = await m_HttpClient.PostAsync(url, new FormUrlEncodedContent(values)).ConfigureAwait(false);
 
-            return await response.Content.ReadAsStringAsync();
+            return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
         public static Uri ValidateUrl(string urlStr)

@@ -73,6 +73,7 @@
       <Link>ThirdParty\libipriv.cs</Link>
     </Compile>
     <Compile Include="Components\CyberPlatHttpClientRequestBuilder.cs" />
+    <Compile Include="Contracts\Configuration\CyberPlatHttpClientRequestBuilderConfiguration.cs" />
     <Compile Include="Components\ICyberPlatHttpClient.cs" />
     <Compile Include="Components\ICyberPlatHttpClientRequestBuilder.cs" />
     <Compile Include="Components\Utility\ConsoleLoggingHttpHandler.cs" />

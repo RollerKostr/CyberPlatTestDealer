@@ -39,7 +39,8 @@ namespace CyberPlatGate.Tests.Contracts
             REQ_TYPE = "1",
             PAY_TOOL = "0",
             TERM_ID = null,
-            COMMENT = "test test 0123456789",
+            //COMMENT = "TEST Кириллица TEST 0123456789", // CyberPlat not supports cyrillic even if I urlencode in cp1521
+            COMMENT = "TEST 0123456789",
             ACCEPT_KEYS = "64182",
             NO_ROUTE = "1",
         };

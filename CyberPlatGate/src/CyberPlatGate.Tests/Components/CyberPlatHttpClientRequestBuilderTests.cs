@@ -3,7 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
+using System.Web;
 using CyberPlatGate.Components;
+using CyberPlatGate.Contracts.Configuration;
+using CyberPlatGate.Contracts.Http;
 using CyberPlatGate.Tests.Contracts;
 using FluentAssertions;
 using NUnit.Framework;
@@ -73,6 +76,16 @@ namespace CyberPlatGate.Tests.Components
             }
         }
 
+        [Test]
+        public void ParseTest()
+        {
+            using (var builder = new CyberPlatHttpClientRequestBuilder(TestConf))
+            {
+                Action action = () => { var response = builder.Parse<CheckResponse>(Resources.ServerCheckResponse); };
+                action.ShouldNotThrow<HttpParseException>();
+            }
+        }
+
         #region Test cases
 
         private static IEnumerable<object> ValidRequests
@@ -80,7 +93,7 @@ namespace CyberPlatGate.Tests.Components
             get
             {
                 yield return ValidContracts.CheckRequest;
-
+                // TODO[mk] Add another types
             }
         }
 

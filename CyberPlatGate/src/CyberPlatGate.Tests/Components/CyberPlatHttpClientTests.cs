@@ -15,6 +15,8 @@ namespace CyberPlatGate.Tests.Components
     [TestFixture]
     class CyberPlatHttpClientTests
     {
+        //TODO[mk] mock builder with NSubstitute and write good unit-tests
+
         [Test]
         [TestCaseSource(nameof(ValidUrls), Category = nameof(ValidUrls))]
         [TestCaseSource(nameof(InvalidUrls), Category = nameof(InvalidUrls))]
@@ -44,7 +46,7 @@ namespace CyberPlatGate.Tests.Components
                 var handler = new ConsoleLoggingHttpHandler();
                 var client = new CyberPlatHttpClient(ValidContracts.ClientConfiguration, builder, handler);
 
-                var response = await client.Send(ValidContracts.CheckRequest);
+                var response = await client.Send(ValidContracts.CheckRequest).ConfigureAwait(false);
             }
         }
 

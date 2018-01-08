@@ -1,12 +1,9 @@
-﻿using CyberPlatGate.Contracts.Http;
-
-namespace CyberPlatGate.Components
+﻿namespace CyberPlatGate.Components
 {
     interface ICyberPlatHttpClientRequestBuilder
     {
-        string Build(StatusRequest request);
-        string Build(PayRequest request);
-        string Build(CheckRequest request);
+        string Build<T>(T request);
         void Verify(string response);
+        T Parse<T>(string response) where T : new();
     }
 }
