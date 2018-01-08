@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Web;
 using CyberPlatGate.Components;
-using CyberPlatGate.Contracts.Configuration;
+using CyberPlatGate.Contracts.Configurations;
 using CyberPlatGate.Contracts.Http;
 using CyberPlatGate.Tests.Contracts;
 using FluentAssertions;
@@ -20,7 +19,7 @@ namespace CyberPlatGate.Tests.Components
         {
             get
             {
-                var validConf = ValidContracts.BuilderConfiguration;
+                var validConf = TestConfigurations.BuilderConfiguration;
                 // Required for NUnit v3.0+ due to different working folder
                 validConf.SecretKeyPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "sec.txt");
                 validConf.PublicKeyPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "pub.txt");

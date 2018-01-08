@@ -1,4 +1,4 @@
-﻿namespace CyberPlatGate.Contracts.Configuration
+﻿namespace CyberPlatGate.Contracts.Configurations
 {
     public enum PayTool
     {

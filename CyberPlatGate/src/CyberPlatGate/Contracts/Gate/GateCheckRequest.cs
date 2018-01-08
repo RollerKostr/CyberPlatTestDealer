@@ -6,7 +6,7 @@
         public string Number { get; set; }
         public string Account { get; set; }
 
-        // If Amount = null, fake check will be performed (like in cellphone payment terminals)
+        // If Amount = null, fake check will be performed (like in cellphone payment terminals before actual amount is entered)
         public double? Amount { get; set; }
     }
 }

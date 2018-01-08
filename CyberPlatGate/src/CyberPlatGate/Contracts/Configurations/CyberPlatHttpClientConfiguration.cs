@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CyberPlatGate.Contracts.Configuration
+namespace CyberPlatGate.Contracts.Configurations
 {
     class CyberPlatHttpClientConfiguration
     {

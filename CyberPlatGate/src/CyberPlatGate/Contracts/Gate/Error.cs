@@ -5,5 +5,10 @@
     {
         public int? ErrorCode { get; set; }
         public string ErrorDescription { get; set; }
+
+        public override string ToString()
+        {
+            return $"{ErrorDescription} (code {ErrorCode?.ToString() ?? "null"})";
+        }
     }
 }

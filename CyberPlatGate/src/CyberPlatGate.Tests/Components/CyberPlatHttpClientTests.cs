@@ -38,10 +38,10 @@ namespace CyberPlatGate.Tests.Components
         [Ignore("Integrational")]
         public async Task CheckPayStatusTest()
         {
-            using (var builder = new CyberPlatHttpClientRequestBuilder(ValidContracts.BuilderConfiguration))
+            using (var builder = new CyberPlatHttpClientRequestBuilder(TestConfigurations.BuilderConfiguration))
             {
                 var handler = new ConsoleLoggingHttpHandler();
-                var client = new CyberPlatHttpClient(builder, ValidContracts.ClientConfiguration, handler);
+                var client = new CyberPlatHttpClient(builder, TestConfigurations.ClientConfiguration, handler);
 
                 var checkRequest = ValidContracts.GenerateCheckRequest();
                 var checkResponse = await client.Send(checkRequest).ConfigureAwait(false);

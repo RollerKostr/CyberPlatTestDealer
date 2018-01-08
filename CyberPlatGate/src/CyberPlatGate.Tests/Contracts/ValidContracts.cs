@@ -1,7 +1,6 @@
 ﻿using System;
 using CyberPlatGate.Components;
 using CyberPlatGate.Components.Utility;
-using CyberPlatGate.Contracts.Configuration;
 using CyberPlatGate.Contracts.Http;
 
 namespace CyberPlatGate.Tests.Contracts
@@ -9,22 +8,6 @@ namespace CyberPlatGate.Tests.Contracts
     static class ValidContracts
     {
         public static readonly Random Rng = new Random();
-
-        public static CyberPlatHttpClientRequestBuilderConfiguration BuilderConfiguration => new CyberPlatHttpClientRequestBuilderConfiguration()
-        {
-            SecretKeyPath = @"C:\Users\RollerKostr\Downloads\29052017_libipriv_win\ActiveX\secret.key",
-            PublicKeyPath = @"C:\Users\RollerKostr\Downloads\29052017_libipriv_win\ActiveX\pubkeys.key",
-            SecretKeyPassword = @"1111111111",
-            PublicKeySerial = @"64182",
-        };
-
-        public static CyberPlatHttpClientConfiguration ClientConfiguration => new CyberPlatHttpClientConfiguration()
-        {
-            CheckUrl  = @"https://ru-demo.cyberplat.com/cgi-bin/es/es_pay_check.cgi",
-            PayUrl    = @"https://ru-demo.cyberplat.com/cgi-bin/es/es_pay.cgi",
-            StatusUrl = @"https://ru-demo.cyberplat.com/cgi-bin/es/es_pay_status.cgi",
-            Timeout = TimeSpan.FromSeconds(90),
-        };
 
         public static CheckRequest GenerateCheckRequest()
         {
@@ -44,7 +27,7 @@ namespace CyberPlatGate.Tests.Contracts
                 TERM_ID = null,
                 //COMMENT = "TEST Кириллица TEST 0123456789", // CyberPlat not supports cyrillic even if I urlencode in cp1521
                 COMMENT = "TEST 0123456789",
-                ACCEPT_KEYS = BuilderConfiguration.PublicKeySerial,
+                ACCEPT_KEYS = TestConfigurations.BuilderConfiguration.PublicKeySerial,
                 NO_ROUTE = "1",
             };
         }
@@ -66,7 +49,7 @@ namespace CyberPlatGate.Tests.Contracts
                 TERM_ID = checkRequest.TERM_ID,
                 COMMENT = "TEST 9876543210",
                 RRN = RandomStringGenerator.GenerateNumericString(32, Rng),
-                ACCEPT_KEYS = BuilderConfiguration.PublicKeySerial,
+                ACCEPT_KEYS = TestConfigurations.BuilderConfiguration.PublicKeySerial,
                 NO_ROUTE = "1",
             };
         }
@@ -91,7 +74,7 @@ namespace CyberPlatGate.Tests.Contracts
             {
                 SESSION = payResponse.SESSION,
                 TRANSID = payResponse.TRANSID,
-                ACCEPT_KEYS = BuilderConfiguration.PublicKeySerial,
+                ACCEPT_KEYS = TestConfigurations.BuilderConfiguration.PublicKeySerial,
             };
         }
     }

@@ -5,7 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Web;
-using CyberPlatGate.Contracts.Configuration;
+using CyberPlatGate.Contracts.Configurations;
+using CyberPlatGate.Contracts.Http;
 using org.CyberPlat;
 
 namespace CyberPlatGate.Components
@@ -26,6 +27,8 @@ namespace CyberPlatGate.Components
 
         public string Build<T>(T request)
         {
+            fillAcceptKeysField(request);
+
             var dict = toDictionary(request);
             var dataStr = string.Join("\r\n", dict.Select(kvp => kvp.Key + "=" + kvp.Value));
             var signedText = signText(dataStr);
@@ -100,7 +103,21 @@ namespace CyberPlatGate.Components
             }
         }
 
-        
+
+
+        private void fillAcceptKeysField<T>(T request)
+        {
+            var checkRequest  = request as CheckRequest;
+            var payRequest    = request as PayRequest;
+            var statusRequest = request as StatusRequest;
+
+            if (checkRequest != null)
+                checkRequest.ACCEPT_KEYS = m_Configuration.PublicKeySerial;
+            if (payRequest != null)
+                payRequest.ACCEPT_KEYS = m_Configuration.PublicKeySerial;
+            if (statusRequest != null)
+                statusRequest.ACCEPT_KEYS = m_Configuration.PublicKeySerial;
+        }
 
         /// <summary>Fail-fast checking of keys opening.</summary>
         private void checkKeys()

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using CyberPlatGate.Contracts.Configuration;
+using CyberPlatGate.Contracts.Configurations;
 using CyberPlatGate.Contracts.Http;
 
 namespace CyberPlatGate.Components
