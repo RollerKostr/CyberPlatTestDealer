@@ -77,11 +77,27 @@ namespace CyberPlatGate.Tests.Components
         }
 
         [Test]
-        public void ParseTest()
+        [TestCaseSource(nameof(ValidResponses))]
+        public void ParseTest(string responseStr, string typeName)
         {
             using (var builder = new CyberPlatHttpClientRequestBuilder(TestConf))
             {
-                Action action = () => { var response = builder.Parse<CheckResponse>(Resources.ServerCheckResponse); };
+                Action action = () =>
+                {
+                    dynamic response;
+                    switch (typeName)
+                    {
+                        case nameof(CheckResponse):
+                            response = builder.Parse<CheckResponse>(responseStr);
+                            break;
+                        case nameof(PayResponse):
+                            response = builder.Parse<PayResponse>(responseStr);
+                            break;
+                        case nameof(StatusResponse):
+                            response = builder.Parse<StatusResponse>(responseStr);
+                            break;
+                    }
+                };
                 action.ShouldNotThrow<HttpParseException>();
             }
         }
@@ -93,7 +109,17 @@ namespace CyberPlatGate.Tests.Components
             get
             {
                 yield return ValidContracts.CheckRequest;
-                // TODO[mk] Add another types
+                yield return ValidContracts.PayRequest(ValidContracts.CheckRequest);
+                // TODO[mk] Add another requests
+            }
+        }
+
+        private static IEnumerable<object> ValidResponses
+        {
+            get
+            {
+                yield return new object[] { Resources.ServerCheckResponse, nameof(CheckResponse) };
+                // TODO[mk] Add another responses
             }
         }
 

@@ -31,18 +31,40 @@ namespace CyberPlatGate.Tests.Contracts
             AP = "17032",
             OP = "17034",
             DATE = DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"),
-            SESSION = RandomStringGenerator.GenerateAlphaNumericalString(20, Rng),
+            SESSION = RandomStringGenerator.GenerateAlphaNumericString(20, Rng),
             NUMBER = "9261112233",
             ACCOUNT = null,
             AMOUNT = "1234.56",
             AMOUNT_ALL = "1249.99",
-            REQ_TYPE = "1",
+            REQ_TYPE = "0",
             PAY_TOOL = "0",
             TERM_ID = null,
             //COMMENT = "TEST Кириллица TEST 0123456789", // CyberPlat not supports cyrillic even if I urlencode in cp1521
             COMMENT = "TEST 0123456789",
-            ACCEPT_KEYS = "64182",
+            ACCEPT_KEYS = BuilderConfiguration.PublicKeySerial,
             NO_ROUTE = "1",
         };
+
+        public static PayRequest PayRequest(CheckRequest checkRequest)
+        {
+            return new PayRequest()
+            {
+                SD = checkRequest.SD,
+                AP = checkRequest.AP,
+                OP = checkRequest.OP,
+                DATE = DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"),
+                SESSION = checkRequest.SESSION,
+                NUMBER = checkRequest.NUMBER,
+                ACCOUNT = checkRequest.ACCOUNT,
+                AMOUNT = checkRequest.AMOUNT,
+                AMOUNT_ALL = checkRequest.AMOUNT_ALL,
+                PAY_TOOL = checkRequest.PAY_TOOL,
+                TERM_ID = checkRequest.TERM_ID,
+                COMMENT = "TEST 9876543210",
+                RRN = RandomStringGenerator.GenerateNumericString(32, Rng),
+                ACCEPT_KEYS = checkRequest.ACCEPT_KEYS,
+                NO_ROUTE = "1",
+            };
+        }
     }
 }

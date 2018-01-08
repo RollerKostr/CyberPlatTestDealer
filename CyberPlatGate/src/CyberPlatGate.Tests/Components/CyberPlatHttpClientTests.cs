@@ -39,14 +39,18 @@ namespace CyberPlatGate.Tests.Components
 
         [Test]
         //[Ignore("Integrational")]
-        public async Task CheckTest()
+        public async Task CheckAndPayTest()
         {
             using (var builder = new CyberPlatHttpClientRequestBuilder(ValidContracts.BuilderConfiguration))
             {
                 var handler = new ConsoleLoggingHttpHandler();
                 var client = new CyberPlatHttpClient(ValidContracts.ClientConfiguration, builder, handler);
 
-                var response = await client.Send(ValidContracts.CheckRequest).ConfigureAwait(false);
+                var checkResponse = await client.Send(ValidContracts.CheckRequest).ConfigureAwait(false);
+                if (checkResponse.RESULT != "0" && checkResponse.ERROR != "0")
+                    throw new Exception("Server returns response with error.");
+
+                var payResponse = await client.Send(ValidContracts.PayRequest(ValidContracts.CheckRequest)).ConfigureAwait(false);
             }
         }
 

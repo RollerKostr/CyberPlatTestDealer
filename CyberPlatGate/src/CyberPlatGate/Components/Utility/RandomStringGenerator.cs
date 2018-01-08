@@ -5,11 +5,17 @@ namespace CyberPlatGate.Components.Utility
     // See https://stackoverflow.com/questions/976646/is-this-a-good-way-to-generate-a-string-of-random-characters for details
     static class RandomStringGenerator
     {
-        public const string AlphaNumericalAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwyxz0123456789";
+        public const string NumericAlphabet = "0123456789";
+        public const string AlphaNumericAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwyxz0123456789";
 
-        public static string GenerateAlphaNumericalString(int size, Random rng)
+        public static string GenerateNumericString(int size, Random rng)
         {
-            return GenerateString(size, rng, AlphaNumericalAlphabet);
+            return GenerateString(size, rng, NumericAlphabet);
+        }
+
+        public static string GenerateAlphaNumericString(int size, Random rng)
+        {
+            return GenerateString(size, rng, AlphaNumericAlphabet);
         }
 
         public static string GenerateString(int size, Random rng, string alphabet)

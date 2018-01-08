@@ -4,10 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
-using System.Text;
 using System.Web;
 using CyberPlatGate.Contracts.Configuration;
-using CyberPlatGate.Contracts.Http;
 using org.CyberPlat;
 
 namespace CyberPlatGate.Components
@@ -32,7 +30,7 @@ namespace CyberPlatGate.Components
             var dataStr = string.Join("\r\n", dict.Select(kvp => kvp.Key + "=" + kvp.Value));
             var signedText = signText(dataStr);
             return signedText;
-            //return HttpUtility.UrlEncode(signedText, Encoding.GetEncoding(1251)); // Not working anyway (CybePlat API says it should)
+            //return HttpUtility.UrlEncode(signedText, Encoding.GetEncoding(1251)); // Not working anyway (CyberPlat API says it should)
         }
 
         public void Verify(string response)

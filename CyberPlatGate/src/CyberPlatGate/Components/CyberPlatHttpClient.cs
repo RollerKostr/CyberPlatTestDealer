@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 using CyberPlatGate.Contracts.Configuration;
 using CyberPlatGate.Contracts.Http;
 
@@ -71,6 +67,7 @@ namespace CyberPlatGate.Components
             return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
+        // TODO[mk] make private
         public static Uri ValidateUrl(string urlStr)
         {
             Uri resultUri;
