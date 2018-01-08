@@ -23,6 +23,7 @@ namespace CyberPlatGate.Tests.Contracts
             CheckUrl  = @"https://ru-demo.cyberplat.com/cgi-bin/es/es_pay_check.cgi",
             PayUrl    = @"https://ru-demo.cyberplat.com/cgi-bin/es/es_pay.cgi",
             StatusUrl = @"https://ru-demo.cyberplat.com/cgi-bin/es/es_pay_status.cgi",
+            Timeout = TimeSpan.FromSeconds(90),
         };
 
         public static CheckRequest GenerateCheckRequest()
@@ -65,8 +66,32 @@ namespace CyberPlatGate.Tests.Contracts
                 TERM_ID = checkRequest.TERM_ID,
                 COMMENT = "TEST 9876543210",
                 RRN = RandomStringGenerator.GenerateNumericString(32, Rng),
-                ACCEPT_KEYS = checkRequest.ACCEPT_KEYS,
+                ACCEPT_KEYS = BuilderConfiguration.PublicKeySerial,
                 NO_ROUTE = "1",
+            };
+        }
+
+        public static PayResponse GeneratePayResponse()
+        {
+            return new PayResponse()
+            {
+                DATE = DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"),
+                SESSION = RandomStringGenerator.GenerateAlphaNumericString(20, Rng),
+                GATEWAY_IN = "9",
+                GATEWAY_OUT = "9",
+                RESULT = "0",
+                ERROR = "0",
+                TRANSID = "1000000000000",
+            };
+        }
+
+        public static StatusRequest GenerateStatusRequest(PayResponse payResponse)
+        {
+            return new StatusRequest()
+            {
+                SESSION = payResponse.SESSION,
+                TRANSID = payResponse.TRANSID,
+                ACCEPT_KEYS = BuilderConfiguration.PublicKeySerial,
             };
         }
     }

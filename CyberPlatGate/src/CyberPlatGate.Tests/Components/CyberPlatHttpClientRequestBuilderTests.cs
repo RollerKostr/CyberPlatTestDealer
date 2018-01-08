@@ -67,7 +67,7 @@ namespace CyberPlatGate.Tests.Components
         }
 
         [Test]
-        [TestCaseSource(nameof(ValidResponses))]
+        [TestCaseSource(nameof(ValidServerResponses))]
         public void VerifyTest(string responseStr, string typeName)
         {
             using (var builder = new CyberPlatHttpClientRequestBuilder(TestConf))
@@ -78,7 +78,7 @@ namespace CyberPlatGate.Tests.Components
         }
 
         [Test]
-        [TestCaseSource(nameof(ValidResponses))]
+        [TestCaseSource(nameof(ValidServerResponses))]
         public void ParseTest(string responseStr, string typeName)
         {
             using (var builder = new CyberPlatHttpClientRequestBuilder(TestConf))
@@ -111,17 +111,17 @@ namespace CyberPlatGate.Tests.Components
             {
                 yield return ValidContracts.GenerateCheckRequest();
                 yield return ValidContracts.GeneratePayRequest(ValidContracts.GenerateCheckRequest());
-                // TODO[mk] Add another requests
+                yield return ValidContracts.GenerateStatusRequest(ValidContracts.GeneratePayResponse());
             }
         }
 
-        private static IEnumerable<object> ValidResponses
+        private static IEnumerable<object> ValidServerResponses
         {
             get
             {
                 yield return new object[] { Resources.ServerCheckResponse, nameof(CheckResponse) };
                 yield return new object[] { Resources.ServerPayResponse, nameof(PayResponse) };
-                // TODO[mk] Add another responses
+                yield return new object[] { Resources.ServerStatusResponse, nameof(StatusResponse) };
             }
         }
 

@@ -136,5 +136,30 @@ namespace CyberPlatGate.Tests {
                 return ResourceManager.GetString("ServerPayResponse", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 0000037101SM000001100000011000000125
+        ///0J0005              00064182
+        ///                    00000000
+        ///BEGIN
+        ///DATE=08.01.2018 16:46:52
+        ///SESSION=oQogwoRHAAyOuLYzBBAk
+        ///ERROR=0
+        ///RESULT=7
+        ///AUTHCODE=0
+        ///TRANSID=1000010856877
+        ///
+        ///END
+        ///BEGIN SIGNATURE
+        ///iQBRAwkBAAD6tlpTdlsBAYS2AgCpvs6vlaqJM4sCJFxLiK+PvwXq0LoIwHHvps6s
+        ///pkJSVgD/eGu/peZSOy/RndnHPGl/aHIUP9vxlzDN5lcgmm12sAHH
+        ///=/k8n
+        ///END SIGNATURE.
+        /// </summary>
+        internal static string ServerStatusResponse {
+            get {
+                return ResourceManager.GetString("ServerStatusResponse", resourceCulture);
+            }
+        }
     }
 }

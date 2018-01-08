@@ -36,7 +36,7 @@ namespace CyberPlatGate.Tests.Components
 
         [Test]
         //[Ignore("Integrational")]
-        public async Task CheckAndPayTest()
+        public async Task CheckPayStatusTest()
         {
             using (var builder = new CyberPlatHttpClientRequestBuilder(ValidContracts.BuilderConfiguration))
             {
@@ -46,9 +46,15 @@ namespace CyberPlatGate.Tests.Components
                 var checkRequest = ValidContracts.GenerateCheckRequest();
                 var checkResponse = await client.Send(checkRequest).ConfigureAwait(false);
                 if (checkResponse.RESULT != "0" && checkResponse.ERROR != "0")
-                    throw new Exception("Server returns response with error.");
+                    throw new Exception("Server returns CheckResponse with error.");
 
                 var payResponse = await client.Send(ValidContracts.GeneratePayRequest(checkRequest)).ConfigureAwait(false);
+                if (payResponse.RESULT != "0" && payResponse.ERROR != "0")
+                    throw new Exception("Server returns PayResponse with error.");
+
+                var statusResponse = await client.Send(ValidContracts.GenerateStatusRequest(payResponse)).ConfigureAwait(false);
+                if (statusResponse.RESULT != "7" && statusResponse.ERROR != "0")
+                    throw new Exception("Server returns StatusResponse with error.");
             }
         }
 

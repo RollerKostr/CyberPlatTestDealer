@@ -108,10 +108,18 @@ namespace CyberPlatGate.Components
             checkKeyPath(m_Configuration.SecretKeyPath);
             checkKeyPath(m_Configuration.PublicKeyPath);
 
-            var secretKey = IPriv.openSecretKey(m_Configuration.SecretKeyPath, m_Configuration.SecretKeyPassword);
-            var publicKey = IPriv.openPublicKey(m_Configuration.PublicKeyPath, Convert.ToUInt32(m_Configuration.PublicKeySerial, 10));
-            secretKey?.closeKey();
-            publicKey?.closeKey();
+            IPrivKey secretKey = null;
+            IPrivKey publicKey = null;
+            try
+            {
+                secretKey = IPriv.openSecretKey(m_Configuration.SecretKeyPath, m_Configuration.SecretKeyPassword);
+                publicKey = IPriv.openPublicKey(m_Configuration.PublicKeyPath, Convert.ToUInt32(m_Configuration.PublicKeySerial, 10));
+            }
+            finally
+            {
+                secretKey?.closeKey();
+                publicKey?.closeKey();
+            }
         }
 
         private static void checkKeyPath(string keyPath)

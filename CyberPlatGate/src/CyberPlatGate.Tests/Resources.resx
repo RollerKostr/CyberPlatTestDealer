@@ -169,4 +169,23 @@ a67TXiHQ0CmCvw/baaC4MIrSCk+ri4+Ic49qh2+TsjP6FbiAsAHH
 =4LiN
 END SIGNATURE</value>
   </data>
+  <data name="ServerStatusResponse" xml:space="preserve">
+    <value>0000037101SM000001100000011000000125
+0J0005              00064182
+                    00000000
+BEGIN
+DATE=08.01.2018 16:46:52
+SESSION=oQogwoRHAAyOuLYzBBAk
+ERROR=0
+RESULT=7
+AUTHCODE=0
+TRANSID=1000010856877
+
+END
+BEGIN SIGNATURE
+iQBRAwkBAAD6tlpTdlsBAYS2AgCpvs6vlaqJM4sCJFxLiK+PvwXq0LoIwHHvps6s
+pkJSVgD/eGu/peZSOy/RndnHPGl/aHIUP9vxlzDN5lcgmm12sAHH
+=/k8n
+END SIGNATURE</value>
+  </data>
 </root>

@@ -26,7 +26,7 @@ namespace CyberPlatGate.Components
             m_Builder = builder;
 
             m_HttpClient = handler != null ? new HttpClient(handler) : new HttpClient();
-            m_HttpClient.Timeout = TimeSpan.FromSeconds(90);
+            m_HttpClient.Timeout = configuration.Timeout;
         }
 
         public async Task<CheckResponse> Send(CheckRequest request)
