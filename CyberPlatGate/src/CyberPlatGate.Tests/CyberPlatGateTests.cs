@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace CyberPlatGate.Tests
 {
     [TestFixture]
-    //[Ignore("Integrational")]
+    [Ignore("Integrational")]
     class CyberPlatGateTests
     {
         private readonly ICyberPlatGate m_Gate;
@@ -33,12 +33,12 @@ namespace CyberPlatGate.Tests
                 Number = "9261112233",
                 Amount = amount,
             };
-            var gateResponse = await m_Gate.Check(gateCheckRequest).ConfigureAwait(false);
+            var gateCheckResponse = await m_Gate.Check(gateCheckRequest).ConfigureAwait(false);
 
             if (shouldSucceed)
-                gateResponse.Error.Should().BeNull(reason);
+                gateCheckResponse.Error.Should().BeNull(reason);
             else
-                gateResponse.Error.Should().NotBeNull(reason);
+                gateCheckResponse.Error.Should().NotBeNull(reason);
         }
 
         [Test]
@@ -54,12 +54,30 @@ namespace CyberPlatGate.Tests
                 Number = "9261112233",
                 Amount = amount,
             };
-            var gateResponse = await m_Gate.CheckAndPay(gateCheckRequest).ConfigureAwait(false);
+            var gatePayResponse = await m_Gate.CheckAndPay(gateCheckRequest).ConfigureAwait(false);
 
             if (shouldSucceed)
-                gateResponse.Error.Should().BeNull(reason);
+                gatePayResponse.Error.Should().BeNull(reason);
             else
-                gateResponse.Error.Should().NotBeNull(reason);
+                gatePayResponse.Error.Should().NotBeNull(reason);
+        }
+
+        [Test]
+        public async Task CheckPayStatusTest()
+        {
+            var gateCheckRequest = new GateCheckRequest()
+            {
+                Number = "9261112233",
+                Amount = 1234.5678,
+            };
+            var gatePayResponse = await m_Gate.CheckAndPay(gateCheckRequest).ConfigureAwait(false);
+
+            var gateStatusRequest = new GateStatusRequest()
+            {
+                Session = gatePayResponse.Session,
+                TransId = gatePayResponse.TransId,
+            };
+            var gateStatusResponse = await m_Gate.Status(gateStatusRequest).ConfigureAwait(false);
         }
     }
 }

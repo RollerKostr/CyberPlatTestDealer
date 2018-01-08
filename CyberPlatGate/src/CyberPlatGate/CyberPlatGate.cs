@@ -53,6 +53,7 @@ namespace CyberPlatGate
                     IsCheckFailed = true,
                     Session = clientCheckRequest.SESSION,
                     RRN = null,
+                    TransId = null,
                 };
 
             var clientPayRequest = new PayRequest()
@@ -82,12 +83,52 @@ namespace CyberPlatGate
                 IsCheckFailed = false,
                 Session = clientCheckRequest.SESSION,
                 RRN = clientPayRequest.RRN,
+                TransId = clientPayResponse.TRANSID,
             };
         }
 
-        public async Task<GateCheckResponse> Status()
+        public async Task<GateStatusResponse> Status(GateStatusRequest gateStatusRequest)
         {
-            throw new NotImplementedException();
+            var clientStatusRequest = new StatusRequest()
+            {
+                SESSION = gateStatusRequest.Session,
+                TRANSID = gateStatusRequest.TransId,
+                ACCEPT_KEYS = null, // will be filled right before sending
+            };
+
+            var clientStatusResponse = await m_Client.Send(clientStatusRequest).ConfigureAwait(false);
+
+            var response = new GateStatusResponse()
+            {
+                AuthCode = clientStatusResponse.AUTHCODE,
+                Session = clientStatusRequest.SESSION,
+                TransId = clientStatusRequest.TRANSID,
+                Error = getStatusError(clientStatusResponse),
+                Status = new TransferProcessingStatus()
+                {
+                    Code = !string.IsNullOrWhiteSpace(clientStatusResponse.RESULT)
+                        ? int.Parse(clientStatusResponse.RESULT)
+                        : (int?) null,
+                },
+            };
+
+            if (response.Status.Code.HasValue)
+            {
+                string statusDesc;
+                if (Constants.GateStatusCodes.TryGetValue(response.Status.Code.Value, out statusDesc))
+                    response.Status.Description = statusDesc;
+                else if (response.Status.Code > 1 && response.Status.Code < 7)
+                    response.Status.Description = "Платеж находится в стадии обработки. Необходимо повторить попытку проверки статуса позднее";
+            }
+            else
+            {
+                if (response.Error.Code == 11)
+                    response.Status.Description = "Платеж не зарегистрирован в Киберплат. Необходимо повторить платеж с первого шага с новым номером сессии";
+                else
+                    response.Status.Description = "Состояние платежа неизвестно. Необходимо повторить попытку проверки статуса позднее";
+            }
+
+            return response;
         }
         
         public async Task<GateCheckResponse> Limits()
@@ -128,15 +169,35 @@ namespace CyberPlatGate
             if (response.RESULT != "0" || response.ERROR != "0")
             {
                 var errCode = int.Parse(response.ERROR);
+                var errDesc = "Произошла неизвестная ошибка";
+
+                error = new Error()
+                {
+                    Code = errCode,
+                    Description = errDesc,
+                };
+                if (Constants.GateErrorCodes.TryGetValue(errCode, out errDesc))
+                    error.Description = errDesc;
+            }
+
+            return error;
+        }
+
+        private static Error getStatusError(StatusResponse response)
+        {
+            Error error = null;
+            if (response.ERROR != "0")
+            {
+                var errCode = int.Parse(response.ERROR);
                 var errDesc = "Unknown error code";
 
                 error = new Error()
                 {
-                    ErrorCode = errCode,
-                    ErrorDescription = errDesc,
+                    Code = errCode,
+                    Description = errDesc,
                 };
-                if (ErrorCodes.GateErrorCodes.TryGetValue(errCode, out errDesc))
-                    error.ErrorDescription = errDesc;
+                if (Constants.GateErrorCodes.TryGetValue(errCode, out errDesc))
+                    error.Description = errDesc;
             }
 
             return error;

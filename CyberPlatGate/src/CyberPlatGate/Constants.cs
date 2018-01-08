@@ -2,7 +2,7 @@
 
 namespace CyberPlatGate
 {
-    static class ErrorCodes
+    static class Constants
     {
         public static readonly Dictionary<int, string> GateErrorCodes = new Dictionary<int, string>()
         {
@@ -77,6 +77,13 @@ namespace CyberPlatGate
 			{ 165, "Продукт шлюза заблокирован" },
 			{ 223, "Контракт клиента не позволяет производить пополнение счета" },
 			{ 270, "Платеж отклонен в связи с ограничениями финансового мониторинга" },
+        };
+
+        public static readonly Dictionary<int, string> GateStatusCodes = new Dictionary<int, string>()
+        {
+            { 1, "Был выполнен только запрос на получение разрешения на платёж (запрос на оплату не поступал)" },
+            { 3, "Платеж направлен к Получателю (обрабатывается в системе КиберПлат)" },
+            { 7, "Платеж завершен, в зависимости от значения поля ERROR платеж завершен успешно или неуспешно" },
         };
     }
 }

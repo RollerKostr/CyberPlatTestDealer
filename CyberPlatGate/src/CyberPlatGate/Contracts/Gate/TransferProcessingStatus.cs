@@ -1,7 +1,7 @@
 ﻿namespace CyberPlatGate.Contracts.Gate
 {
-    /// <summary>Represents generic error with description and optional code.</summary>
-    public class Error
+    /// <summary>Represents status code with description.</summary>
+    public class TransferProcessingStatus
     {
         public int? Code { get; set; }
         public string Description { get; set; }

@@ -79,7 +79,10 @@
     <Compile Include="Components\Utility\ConsoleLoggingHttpHandler.cs" />
     <Compile Include="Components\Utility\RandomStringGenerator.cs" />
     <Compile Include="Contracts\Configurations\CyberPlatHttpClientConfiguration.cs" />
+    <Compile Include="Contracts\Gate\TransferProcessingStatus.cs" />
     <Compile Include="Contracts\Gate\Error.cs" />
+    <Compile Include="Contracts\Gate\GateStatusResponse.cs" />
+    <Compile Include="Contracts\Gate\GateStatusRequest.cs" />
     <Compile Include="Contracts\Gate\GatePayResponse.cs" />
     <Compile Include="Contracts\Gate\GateCheckResponse.cs" />
     <Compile Include="Contracts\Gate\GateCheckRequest.cs" />
@@ -91,7 +94,7 @@
     <Compile Include="Contracts\Http\PayResponse.cs" />
     <Compile Include="Contracts\Http\CheckResponse.cs" />
     <Compile Include="Contracts\Configurations\CyberPlatGateConfiguration.cs" />
-    <Compile Include="ErrorCodes.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Components\CyberPlatHttpClient.cs" />
     <Compile Include="Contracts\Http\CheckRequest.cs" />

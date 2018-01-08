@@ -14,7 +14,7 @@ namespace CyberPlatGate
         /// <summary>Получение разрешения на платеж + выполнение платежа в случае успешного ответа сервера.</summary>
         Task<GatePayResponse> CheckAndPay(GateCheckRequest gateCheckRequest);
         /// <summary>Проверка состояния платежа</summary>
-        Task<GateCheckResponse> Status();
+        Task<GateStatusResponse> Status(GateStatusRequest gateStatusRequest);
         /// <summary>Запрос остатка на счете Контрагента и лимитов</summary>
         Task<GateCheckResponse> Limits();
     }
