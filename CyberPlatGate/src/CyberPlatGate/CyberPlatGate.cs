@@ -25,9 +25,81 @@ namespace CyberPlatGate
             m_Configuration = configuration;
         }
 
-        public async Task<GateResponse> Check(GateCheckRequest request)
+        public async Task<GateCheckResponse> Check(GateCheckRequest gateCheckRequest)
         {
-            var clientCheckRequest = new CheckRequest()
+            var clientCheckRequest = prepareCheckRequest(gateCheckRequest);
+
+            var clientCheckResponse = await m_Client.Send(clientCheckRequest).ConfigureAwait(false);
+
+            return new GateCheckResponse()
+            {
+                DisplayInfo = clientCheckResponse.ADDINFO,
+                Error = getCheckPayError(clientCheckResponse),
+                Session = clientCheckRequest.SESSION,
+            };
+        }
+
+        public async Task<GatePayResponse> CheckAndPay(GateCheckRequest gateCheckRequest)
+        {
+            var clientCheckRequest = prepareCheckRequest(gateCheckRequest);
+
+            var clientCheckResponse = await m_Client.Send(clientCheckRequest).ConfigureAwait(false);
+
+            var error = getCheckPayError(clientCheckResponse);
+            if (error != null)
+                return new GatePayResponse()
+                {
+                    Error = error,
+                    IsCheckFailed = true,
+                    Session = clientCheckRequest.SESSION,
+                    RRN = null,
+                };
+
+            var clientPayRequest = new PayRequest()
+            {
+                SD = clientCheckRequest.SD,
+                AP = clientCheckRequest.AP,
+                OP = clientCheckRequest.OP,
+                DATE = DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"),
+                SESSION = clientCheckRequest.SESSION,
+                NUMBER = clientCheckRequest.NUMBER,
+                ACCOUNT = clientCheckRequest.ACCOUNT,
+                AMOUNT = clientCheckRequest.AMOUNT,
+                AMOUNT_ALL = clientCheckRequest.AMOUNT_ALL,
+                PAY_TOOL = clientCheckRequest.PAY_TOOL,
+                TERM_ID = clientCheckRequest.TERM_ID,
+                COMMENT = "",
+                RRN = RandomStringGenerator.GenerateNumericString(32, m_Rng),
+                ACCEPT_KEYS = null, // will be filled right before sending
+                NO_ROUTE = clientCheckRequest.NO_ROUTE,
+            };
+
+            var clientPayResponse = await m_Client.Send(clientPayRequest).ConfigureAwait(false);
+
+            return new GatePayResponse()
+            {
+                Error = getCheckPayError(clientPayResponse),
+                IsCheckFailed = false,
+                Session = clientCheckRequest.SESSION,
+                RRN = clientPayRequest.RRN,
+            };
+        }
+
+        public async Task<GateCheckResponse> Status()
+        {
+            throw new NotImplementedException();
+        }
+        
+        public async Task<GateCheckResponse> Limits()
+        {
+            throw new NotImplementedException();
+        }
+
+
+
+        private CheckRequest prepareCheckRequest(GateCheckRequest request)
+        {
+            return new CheckRequest()
             {
                 SD = m_Configuration.SD,
                 AP = m_Configuration.AP,
@@ -39,49 +111,36 @@ namespace CyberPlatGate
                 AMOUNT = request.Amount.HasValue ? printDouble(request.Amount.Value) : printDouble(FAKE_AMOUNT),
                 AMOUNT_ALL = request.Amount.HasValue ? printDouble(request.Amount.Value) : printDouble(FAKE_AMOUNT),
                 REQ_TYPE = request.Amount == null ? "1" : "0",
-                PAY_TOOL = ((int) m_Configuration.PAY_TOOL).ToString(),
+                PAY_TOOL = ((int)m_Configuration.PAY_TOOL).ToString(),
                 TERM_ID = m_Configuration.TERM_ID,
                 COMMENT = "",
                 ACCEPT_KEYS = null, // will be filled right before sending
                 NO_ROUTE = m_Configuration.NO_ROUTE ? "1" : "0",
             };
+        }
 
-            var clientCheckResponse = await m_Client.Send(clientCheckRequest).ConfigureAwait(false);
+        private static Error getCheckPayError(dynamic response)
+        {
+            if (!(response is CheckResponse || response is PayResponse))
+                return null;
 
-            var gateResponse = new GateResponse() { DisplayInfo = clientCheckResponse.ADDINFO };
-            if (clientCheckResponse.RESULT != "0" || clientCheckResponse.ERROR != "0")
+            Error error = null;
+            if (response.RESULT != "0" || response.ERROR != "0")
             {
-                var errCode = int.Parse(clientCheckResponse.ERROR);
+                var errCode = int.Parse(response.ERROR);
                 var errDesc = "Unknown error code";
-                
-                gateResponse.Error = new Error()
+
+                error = new Error()
                 {
                     ErrorCode = errCode,
                     ErrorDescription = errDesc,
                 };
                 if (ErrorCodes.GateErrorCodes.TryGetValue(errCode, out errDesc))
-                    gateResponse.Error.ErrorDescription = errDesc;
+                    error.ErrorDescription = errDesc;
             }
 
-            return gateResponse;
+            return error;
         }
-
-        public async Task<GateResponse> CheckAndPay()
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<GateResponse> Status()
-        {
-            throw new NotImplementedException();
-        }
-        
-        public async Task<GateResponse> Limits()
-        {
-            throw new NotImplementedException();
-        }
-
-
 
         // Suitable for CyberPlat API
         private static string printDouble(double d)

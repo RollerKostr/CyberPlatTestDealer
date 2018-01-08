@@ -10,12 +10,12 @@ namespace CyberPlatGate
     public interface ICyberPlatGate
     {
         /// <summary>Получение разрешения на платеж (проверка номера телефона/счета на корректность)</summary>
-        Task<GateResponse> Check(GateCheckRequest request);
+        Task<GateCheckResponse> Check(GateCheckRequest gateCheckRequest);
         /// <summary>Получение разрешения на платеж + выполнение платежа в случае успешного ответа сервера.</summary>
-        Task<GateResponse> CheckAndPay();
+        Task<GatePayResponse> CheckAndPay(GateCheckRequest gateCheckRequest);
         /// <summary>Проверка состояния платежа</summary>
-        Task<GateResponse> Status();
+        Task<GateCheckResponse> Status();
         /// <summary>Запрос остатка на счете Контрагента и лимитов</summary>
-        Task<GateResponse> Limits();
+        Task<GateCheckResponse> Limits();
     }
 }

@@ -105,18 +105,12 @@ namespace CyberPlatGate.Components
 
 
 
-        private void fillAcceptKeysField<T>(T request)
+        private void fillAcceptKeysField(dynamic request)
         {
-            var checkRequest  = request as CheckRequest;
-            var payRequest    = request as PayRequest;
-            var statusRequest = request as StatusRequest;
-
-            if (checkRequest != null)
-                checkRequest.ACCEPT_KEYS = m_Configuration.PublicKeySerial;
-            if (payRequest != null)
-                payRequest.ACCEPT_KEYS = m_Configuration.PublicKeySerial;
-            if (statusRequest != null)
-                statusRequest.ACCEPT_KEYS = m_Configuration.PublicKeySerial;
+            if (request is CheckRequest ||
+                request is PayRequest ||
+                request is StatusRequest)
+                request.ACCEPT_KEYS = m_Configuration.PublicKeySerial;
         }
 
         /// <summary>Fail-fast checking of keys opening.</summary>

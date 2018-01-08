@@ -80,7 +80,8 @@
     <Compile Include="Components\Utility\RandomStringGenerator.cs" />
     <Compile Include="Contracts\Configurations\CyberPlatHttpClientConfiguration.cs" />
     <Compile Include="Contracts\Gate\Error.cs" />
-    <Compile Include="Contracts\Gate\GateResponse.cs" />
+    <Compile Include="Contracts\Gate\GatePayResponse.cs" />
+    <Compile Include="Contracts\Gate\GateCheckResponse.cs" />
     <Compile Include="Contracts\Gate\GateCheckRequest.cs" />
     <Compile Include="Contracts\Http\LimitsRequest.cs" />
     <Compile Include="Contracts\Http\StatusRequest.cs" />
