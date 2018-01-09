@@ -1,7 +1,7 @@
 ﻿// ReSharper disable InconsistentNaming
 namespace CyberPlatGate.Contracts.Http
 {
-    class CheckRequest
+    public class CheckRequest
     {
     	///<summary>
     	/// NNNNN – код Контрагента, где N – цифра

@@ -9,7 +9,7 @@ using CyberPlatGate.Contracts.Http;
 
 namespace CyberPlatGate
 {
-    class CyberPlatGate : ICyberPlatGate
+    public class CyberPlatGate : ICyberPlatGate
     {
         private readonly ICyberPlatHttpClient m_Client;
         private readonly CyberPlatGateConfiguration m_Configuration;

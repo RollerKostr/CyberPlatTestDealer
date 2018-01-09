@@ -11,7 +11,7 @@ using org.CyberPlat;
 
 namespace CyberPlatGate.Components
 {
-    class CyberPlatSignatureManager : ICyberPlatSignatureManager, IDisposable
+    public class CyberPlatSignatureManager : ICyberPlatSignatureManager, IDisposable
     {
         private readonly CyberPlatSignatureManagerConfiguration m_Configuration;
 

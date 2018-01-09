@@ -1,6 +1,6 @@
 ﻿namespace CyberPlatGate.Components
 {
-    interface ICyberPlatSignatureManager
+    public interface ICyberPlatSignatureManager
     {
         string Sign<T>(T request);
         void Verify(string response);

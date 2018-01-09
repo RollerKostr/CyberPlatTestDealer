@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace CyberPlatGate.Contracts.Configurations
+﻿namespace CyberPlatGate.Contracts.Configurations
 {
-    class CyberPlatHttpClientConfiguration
+    public class CyberPlatHttpClientConfiguration
     {
         public string CheckUrl { get; set; }
         public string PayUrl { get; set; }

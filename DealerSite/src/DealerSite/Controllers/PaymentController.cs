@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using CyberPlatGate;
 using CyberPlatGate.Contracts.Gate;
 using DealerSite.Components;
 using DealerSite.Models;
@@ -14,6 +15,13 @@ namespace DealerSite.Controllers
 {
     public class PaymentController : Controller
     {
+        private readonly ICyberPlatGate m_Gate;
+
+        public PaymentController(ICyberPlatGate gate)
+        {
+            m_Gate = gate;
+        }
+
         [HttpGet]
         public ActionResult Index()
         {
@@ -52,7 +60,7 @@ namespace DealerSite.Controllers
         [HttpPost]
         public async Task<ActionResult> Status(StatusInput input)
         {
-            var paymentViewModel = new PaymentViewModel()
+            var paymentViewModel = new PaymentViewModel() // TODO[mk] add validation
             {
                 StatusInput = input,
             };

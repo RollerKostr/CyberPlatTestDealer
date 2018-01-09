@@ -1,7 +1,7 @@
 ﻿// ReSharper disable InconsistentNaming
 namespace CyberPlatGate.Contracts.Http
 {
-    class StatusRequest
+    public class StatusRequest
     {
 		///<summary>
 		/// уникальный идентификатор сессии для данной точки приема, последовательность латинских букв и цифр, длиной не более 20 символов,

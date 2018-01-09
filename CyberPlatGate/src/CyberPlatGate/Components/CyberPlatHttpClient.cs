@@ -7,7 +7,7 @@ using CyberPlatGate.Contracts.Http;
 
 namespace CyberPlatGate.Components
 {
-    class CyberPlatHttpClient : ICyberPlatHttpClient
+    public class CyberPlatHttpClient : ICyberPlatHttpClient
     {
         private Uri CheckUrl { get; }
         private Uri PayUrl { get; }

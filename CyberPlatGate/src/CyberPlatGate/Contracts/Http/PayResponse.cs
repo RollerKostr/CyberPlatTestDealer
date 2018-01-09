@@ -1,7 +1,7 @@
 ﻿// ReSharper disable InconsistentNaming
 namespace CyberPlatGate.Contracts.Http
 {
-    class PayResponse
+    public class PayResponse
     {
 		///<summary>
 		/// DD.MM.YYYY HH:MM:SS – дата и время запроса на оплату (местное время на сервере Киберплат)

@@ -1,6 +1,6 @@
 ﻿namespace CyberPlatGate.Contracts.Configurations
 {
-    class CyberPlatSignatureManagerConfiguration
+    public class CyberPlatSignatureManagerConfiguration
     {
         public string SecretKeyPath { get; set; }
         public string PublicKeyPath { get; set; }

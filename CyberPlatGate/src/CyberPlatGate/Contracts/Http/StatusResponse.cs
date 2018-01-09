@@ -1,7 +1,7 @@
 ﻿// ReSharper disable InconsistentNaming
 namespace CyberPlatGate.Contracts.Http
 {
-    class StatusResponse
+    public class StatusResponse
     {
 		///<summary>
 		/// DD.MM.YYYY HH:MM:SS – дата и время начала транзакции в системе КиберПлат

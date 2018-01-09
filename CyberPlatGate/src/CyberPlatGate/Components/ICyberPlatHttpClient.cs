@@ -3,7 +3,7 @@ using CyberPlatGate.Contracts.Http;
 
 namespace CyberPlatGate.Components
 {
-    interface ICyberPlatHttpClient
+    public interface ICyberPlatHttpClient
     {
         Task<StatusResponse> Send(StatusRequest request);
         Task<PayResponse> Send(PayRequest request);
