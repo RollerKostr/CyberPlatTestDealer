@@ -72,6 +72,16 @@
     <span>Payment info:</span>
     <div id="info" style="border: solid lightgray 3px; border-style: groove; padding: 0px 4px; margin: 2px; width: 600px; min-height: 100px;">
     @{
+        if (!string.IsNullOrEmpty(Model?.ExceptionMessage))
+        {
+            <table style="border: solid red 1px; margin: 4px 0px; width: 100%; color: red;">
+                <tr>
+                    <td><b>Exception occured:</b></td>
+                    <td>@Model.ExceptionMessage</td>
+                </tr>
+            </table>
+        }
+
         if (Model?.GateCheckResponse != null)
         {
             <table style="border: solid black 1px; margin: 4px 0px; width: 100%;">
@@ -123,7 +133,7 @@
                 </tr>
                 <tr>
                     <td>Error message and code:</td>
-                    <td>@(Model.GatePayResponse.Error?.Description ?? "null") (code = @(Model.GateCheckResponse.Error?.Code.ToString() ?? "null"))</td>
+                    <td>@(Model.GatePayResponse.Error?.Description ?? "null") (code = @(Model.GatePayResponse.Error?.Code.ToString() ?? "null"))</td>
                 </tr>
             </table>
         }

@@ -1,8 +1,10 @@
-﻿using Castle.MicroKernel.Registration;
+﻿using System.Net.Http;
+using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using CyberPlatGate;
 using CyberPlatGate.Components;
+using CyberPlatGate.Components.Utility;
 using CyberPlatGate.Contracts.Configurations;
 
 namespace DealerSite.Windsor
@@ -14,6 +16,7 @@ namespace DealerSite.Windsor
             container.Register(
                 Component.For<ICyberPlatGate>().ImplementedBy<CyberPlatGate.CyberPlatGate>(),
                 Component.For<ICyberPlatHttpClient>().ImplementedBy<CyberPlatHttpClient>(),
+                    //.DependsOn(Dependency.OnValue<HttpMessageHandler>(new ConsoleLoggingHttpHandler())), // TODO[mk] implement fileLoggingHandler with Windsor.Logger
                 Component.For<ICyberPlatSignatureManager>().ImplementedBy<CyberPlatSignatureManager>()
             );
 

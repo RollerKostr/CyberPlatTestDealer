@@ -7,7 +7,6 @@ using System.Web;
 using System.Web.Mvc;
 using CyberPlatGate;
 using CyberPlatGate.Contracts.Gate;
-using DealerSite.Components;
 using DealerSite.Models;
 using DealerSite.ViewModels;
 
@@ -49,10 +48,14 @@ namespace DealerSite.Controllers
                 Amount = double.Parse(input.Amount, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture),
             };
 
-            await Task.Delay(TimeSpan.FromSeconds(2)); // Imitate request
-
-            paymentViewModel.GateCheckResponse = TestGateResponses.ValidCheckResponse;
-            paymentViewModel.GatePayResponse = TestGateResponses.ValidPayResponse;
+            try
+            {
+                paymentViewModel.GatePayResponse = await m_Gate.CheckAndPay(gateCheckRequest);
+            }
+            catch (Exception e)
+            {
+                paymentViewModel.ExceptionMessage = e.Message;
+            }
 
             return View("Index", paymentViewModel);
         }
@@ -74,9 +77,14 @@ namespace DealerSite.Controllers
                 TransId = input.TransId,
             };
 
-            await Task.Delay(TimeSpan.FromSeconds(2)); // Imitate request
-
-            paymentViewModel.GateStatusResponse = TestGateResponses.ValidStatusResponse;
+            try
+            {
+                paymentViewModel.GateStatusResponse = await m_Gate.Status(gateStatusRequest);
+            }
+            catch (Exception e)
+            {
+                paymentViewModel.ExceptionMessage = e.Message;
+            }
 
             return View("Index", paymentViewModel);
         }
