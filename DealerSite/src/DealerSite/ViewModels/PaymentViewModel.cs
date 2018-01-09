@@ -14,7 +14,8 @@ namespace DealerSite.ViewModels
 
         public bool IsCheckSuccessfull => GateCheckResponse != null && GateCheckResponse.Error == null;
         public bool IsPaySuccessfull => GatePayResponse != null && GatePayResponse.Error == null;
-        public bool IsStatusSuccessfull => GateStatusResponse != null && GateStatusResponse.Error == null && GateStatusResponse.Status.IsFinished;
+        public bool IsStatusSuccessfull => GateStatusResponse != null && GateStatusResponse.Error == null &&
+                                           GateStatusResponse.Status != null && GateStatusResponse.Status.IsFinished;
 
         public string ExceptionMessage { get; set; }
     }

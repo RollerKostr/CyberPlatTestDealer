@@ -50,7 +50,7 @@ namespace DealerSite.Controllers
 
             try
             {
-                paymentViewModel.GatePayResponse = await m_Gate.CheckAndPay(gateCheckRequest);
+                paymentViewModel.GatePayResponse = await m_Gate.CheckAndPay(gateCheckRequest).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -79,7 +79,7 @@ namespace DealerSite.Controllers
 
             try
             {
-                paymentViewModel.GateStatusResponse = await m_Gate.Status(gateStatusRequest);
+                paymentViewModel.GateStatusResponse = await m_Gate.Status(gateStatusRequest).ConfigureAwait(false);
             }
             catch (Exception e)
             {
