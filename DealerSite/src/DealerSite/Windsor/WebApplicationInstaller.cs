@@ -1,11 +1,13 @@
 ﻿using System.Net.Http;
+using Castle.Facilities.Logging;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
+using Castle.Services.Logging.NLogIntegration;
 using Castle.Windsor;
 using CyberPlatGate;
 using CyberPlatGate.Components;
-using CyberPlatGate.Components.Utility;
 using CyberPlatGate.Contracts.Configurations;
+using DealerSite.Components;
 
 namespace DealerSite.Windsor
 {
@@ -13,10 +15,15 @@ namespace DealerSite.Windsor
     {
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
+            container.AddFacility<LoggingFacility>(f => f.LogUsing<NLogFactory>().WithConfig("NLog.config"));
+
+            container.Register(
+                Component.For<HttpMessageHandler>().ImplementedBy<LoggingHttpHandler>()
+                );
+
             container.Register(
                 Component.For<ICyberPlatGate>().ImplementedBy<CyberPlatGate.CyberPlatGate>(),
                 Component.For<ICyberPlatHttpClient>().ImplementedBy<CyberPlatHttpClient>(),
-                    //.DependsOn(Dependency.OnValue<HttpMessageHandler>(new ConsoleLoggingHttpHandler())), // TODO[mk] implement fileLoggingHandler with Windsor.Logger
                 Component.For<ICyberPlatSignatureManager>().ImplementedBy<CyberPlatSignatureManager>()
             );
 

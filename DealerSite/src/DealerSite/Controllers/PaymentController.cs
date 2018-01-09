@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Castle.Core.Logging;
 using CyberPlatGate;
 using CyberPlatGate.Contracts.Gate;
 using DealerSite.Models;
@@ -15,10 +16,14 @@ namespace DealerSite.Controllers
     public class PaymentController : Controller
     {
         private readonly ICyberPlatGate m_Gate;
+        private readonly ILogger m_Logger;
 
-        public PaymentController(ICyberPlatGate gate)
+        public PaymentController(ICyberPlatGate gate, ILogger logger)
         {
+            if (gate == null) throw new ArgumentNullException(nameof(gate));
+            if (logger == null) throw new ArgumentNullException(nameof(logger));
             m_Gate = gate;
+            m_Logger = logger;
         }
 
         [HttpGet]
@@ -54,6 +59,7 @@ namespace DealerSite.Controllers
             }
             catch (Exception e)
             {
+                m_Logger.Error(e.Message, e);
                 paymentViewModel.ExceptionMessage = e.Message;
             }
 
@@ -83,6 +89,7 @@ namespace DealerSite.Controllers
             }
             catch (Exception e)
             {
+                m_Logger.Error(e.Message, e);
                 paymentViewModel.ExceptionMessage = e.Message;
             }
 
