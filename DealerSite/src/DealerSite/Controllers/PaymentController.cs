@@ -50,13 +50,25 @@ namespace DealerSite.Controllers
         }
 
         [HttpPost]
-        public ActionResult Status(string session, string transId)
+        public async Task<ActionResult> Status(StatusInput input)
         {
             var paymentViewModel = new PaymentViewModel()
             {
-                GateCheckResponse = TestGateResponses.ValidCheckResponse,
-                GatePayResponse = TestGateResponses.ValidPayResponse,
+                StatusInput = input,
             };
+
+            if (!ModelState.IsValid)
+                return View("Index", paymentViewModel);
+
+            var gateStatusRequest = new GateStatusRequest()
+            {
+                Session = input.Session,
+                TransId = input.TransId,
+            };
+
+            await Task.Delay(TimeSpan.FromSeconds(2)); // Imitate request
+
+            paymentViewModel.GateStatusResponse = TestGateResponses.ValidStatusResponse;
 
             return View("Index", paymentViewModel);
         }

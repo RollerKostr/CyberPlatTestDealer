@@ -44,5 +44,37 @@ namespace DealerSite.Components
             TransId = "ServerTransId",
             IsCheckFailed = true,
         };
+
+        public static GateStatusResponse ValidStatusResponse => new GateStatusResponse()
+        {
+            Error = null,
+            Status = new TransferProcessingStatus()
+            {
+                Code = 7,
+                Description = "All done!",
+                IsFinished = true,
+            },
+            TransId = "ServerTransId",
+            Session = "abcdefgh",
+            AuthCode = "0",
+        };
+
+        public static GateStatusResponse InvalidStatusResponse => new GateStatusResponse()
+        {
+            Error = new Error()
+            {
+                Code = 25,
+                Description = "Some problems with Status request",
+            },
+            Status = new TransferProcessingStatus()
+            {
+                Code = 3,
+                Description = "Transfer is not processed yet",
+                IsFinished = false,
+            },
+            TransId = "ServerTransId",
+            Session = "abcdefgh",
+            AuthCode = "999",
+        };
     }
 }

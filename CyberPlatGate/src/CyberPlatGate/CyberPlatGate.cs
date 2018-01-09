@@ -106,6 +106,7 @@ namespace CyberPlatGate
                 Error = getStatusError(clientStatusResponse),
                 Status = new TransferProcessingStatus()
                 {
+                    IsFinished = false,
                     Code = !string.IsNullOrWhiteSpace(clientStatusResponse.RESULT)
                         ? int.Parse(clientStatusResponse.RESULT)
                         : (int?) null,
@@ -119,6 +120,9 @@ namespace CyberPlatGate
                     response.Status.Description = statusDesc;
                 else if (response.Status.Code > 1 && response.Status.Code < 7)
                     response.Status.Description = "Платеж находится в стадии обработки. Необходимо повторить попытку проверки статуса позднее";
+
+                if (response.Status.Code.Value == 7)
+                    response.Status.IsFinished = true;
             }
             else
             {

@@ -14,7 +14,7 @@
 </head>
 <body>
     <script>
-    function resetForm() {
+    function resetPayForm() {
         document.getElementById('numberInput').value = "";
         document.getElementById('amountInput').value = "";
     }
@@ -22,26 +22,52 @@
 <div>
     <span style="font-size: 20px;">Test payment interface through CyberPlat gate:</span>
     <div style="margin: 2px;">
+    @{
         <form action="/Payment/Payment" method="post">
             <table>
                 <tr>
                     <td>Phone number:</td>
-                    <td><input type="text" id="numberInput" name="number" value="@(Model?.PaymentInput?.Number ?? "")" placeholder="9261112233" /></td>
+                    <td><input type="text" id="numberInput" name="number" value="@(Model?.PaymentInput?.Number ?? "")" placeholder="9261112233"/></td>
                     <td style="color: red;">@Html.ValidationMessage("number")</td>
                 </tr>
                 <tr>
                     <td>Amount to pay:</td>
-                    <td><input type="text" id="amountInput" name="amount" value="@(Model?.PaymentInput?.Amount ?? "")" placeholder="123.45" /></td>
+                    <td><input type="text" id="amountInput" name="amount" value="@(Model?.PaymentInput?.Amount ?? "")" placeholder="123.45"/></td>
                     <td style="color: red;">@Html.ValidationMessage("amount")</td>
                 </tr>
                 <tr>
                     <td colspan="2">
-                        <input type="submit" name="BtnPay" value="Pay" />
-                        <input type="button" name="BtnClear" value="Clear" onclick="resetForm();" />
+                        <input type="submit" name="BtnPay" value="Pay"/>
+                        <input type="button" name="BtnPayClear" value="Clear" onclick="resetPayForm();"/>
                     </td>
                 </tr>
             </table>
         </form>
+
+        if (Model?.GatePayResponse != null)
+        {
+            <form action="/Payment/Status" method="post">
+                <table>
+                    <tr>
+                        <td>Transaction ID:</td>
+                        <!-- Dirty workaround due to disabled inputs won't send any values -->
+                        <td><input type="text" id="transIdInput" name="transIdDisabled" value="@(Model.GatePayResponse.TransId ?? "")" disabled></td>
+                        <td style="display: none;"><input type="text" id="transIdInputHidden" name="transId" value="@(Model.GatePayResponse.TransId ?? "")"/></td>
+                    </tr>
+                    <tr>
+                        <td>Session:</td>
+                        <td><input type="text" id="sessionInput" name="sessionDisabled" value="@(Model.GatePayResponse.Session ?? "")" disabled></td>
+                        <td style="display: none;"><input type="text" id="sessionInputHidden" name="session" value="@(Model.GatePayResponse.Session ?? "")"/></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <input type="submit" name="BtnStatus" value="Get payment status" />
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        }
+    }
     </div>
     <span>Payment info:</span>
     <div id="info" style="border: solid lightgray 3px; border-style: groove; padding: 0px 4px; margin: 2px; width: 600px; min-height: 100px;">
@@ -98,6 +124,40 @@
                 <tr>
                     <td>Error message and code:</td>
                     <td>@(Model.GatePayResponse.Error?.Description ?? "null") (code = @(Model.GateCheckResponse.Error?.Code.ToString() ?? "null"))</td>
+                </tr>
+            </table>
+        }
+
+        if (Model?.GateStatusResponse != null)
+        {
+            <table style="border: solid black 1px; margin: 4px 0px; width: 100%;">
+                <tr>
+                    <td>Server "Status" response:</td>
+                    <td>
+                        <span style="background-color: @(Model.IsStatusSuccessfull ? "green" : "red")">
+                            <b>@(Model.IsStatusSuccessfull ? "success" : "fail")</b>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Recipient system authorization code:</td>
+                    <td>@Model.GateStatusResponse.AuthCode</td>
+                </tr>
+                <tr>
+                    <td>CyberPlat system transaction number:</td>
+                    <td>@Model.GateStatusResponse.TransId</td>
+                </tr>
+                <tr>
+                    <td>Session number:</td>
+                    <td>@Model.GateStatusResponse.Session</td>
+                </tr>
+                <tr>
+                    <td>Error message and code:</td>
+                    <td>@(Model.GateStatusResponse.Error?.Description ?? "null") (code = @(Model.GateStatusResponse.Error?.Code.ToString() ?? "null"))</td>
+                </tr>
+                <tr>
+                    <td>Status message and code:</td>
+                    <td>@(Model.GateStatusResponse.Status?.Description ?? "null") (code = @(Model.GateStatusResponse.Status?.Code.ToString() ?? "null"))</td>
                 </tr>
             </table>
         }
