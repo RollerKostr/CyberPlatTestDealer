@@ -1,4 +1,5 @@
-﻿@using DealerSite.ViewModels
+﻿@using System.Globalization
+@using DealerSite.ViewModels
 @model PaymentViewModel
 
 @{
@@ -13,19 +14,51 @@
     <title>Index</title>
 </head>
 <body>
+    <script>
+    function resetForm() {
+        document.getElementById('numberInput').value = "";
+        document.getElementById('amountInput').value = "";
+    }
+    </script>
 <div>
     <span style="font-size: 20px;">Test payment interface through CyberPlat gate:</span>
     <div>
-        <form action="/Payment/Pay" method="post">
-            Phone number: <input type="text" id="numberInput" name="number" value="" /><br />
-            Amount to pay: <input type="text" id="amountInput" name="amount" value="" /><br />
-            <input type="submit" name="BtnPay" value="Pay" />
-            <input type="button" name="BtnClear" value="Clear" />
+        <form action="/Payment/Payment" method="post">
+            <table>
+                <tr>
+                    <td>
+                        Phone number:
+                    </td>
+                    <td>
+                        <input type="text" id="numberInput" name="number" value="@(Model?.PaymentInput?.Number ?? "")" placeholder="9261112233" />
+                    </td>
+                    <td style="color: red;">
+                        @Html.ValidationMessage("number")
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Amount to pay:
+                    </td>
+                    <td>
+                        <input type="text" id="amountInput" name="amount" value="@(Model?.PaymentInput?.Amount ?? "")" placeholder="123.45" />
+                    </td>
+                    <td style="color: red;">
+                        @Html.ValidationMessage("amount")
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="submit" name="BtnPay" value="Pay" />
+                        <input type="button" name="BtnClear" value="Clear" onclick="resetForm();" />
+                    </td>
+                </tr>
+            </table>
         </form>
     </div>
-    <div id="info" style="border: solid gray 1px; padding: 4px; margin: 20px; width: 600px; min-height: 100px;">
+    <div id="info" style="border: solid gray 1px; padding: 4px; margin: 3px; width: 600px; min-height: 100px;">
         @{
-            if (Model.GateCheckResponse != null)
+            if (Model?.GateCheckResponse != null)
             {
                 <span>Server CheckResponse:
                     @if (Model.IsCheckSuccessfull)
@@ -41,7 +74,7 @@
                         </span>
                     }
                 </span>
-                <table style="border: solid black 1px">
+                <table>
                     <tr>
                         <td>Info for user</td>
                         <td>@Model.GateCheckResponse.DisplayInfo</td>

@@ -129,7 +129,10 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\PaymentInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Validation\AmountValidator.cs" />
+    <Compile Include="Validation\PhoneNumberValidator.cs" />
     <Compile Include="ViewModels\PaymentViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -171,7 +174,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
