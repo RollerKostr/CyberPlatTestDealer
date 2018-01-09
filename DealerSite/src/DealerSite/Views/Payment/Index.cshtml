@@ -1,0 +1,38 @@
+﻿@using CyberPlatGate.Contracts.Gate
+@model GateCheckResponse
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+<div>
+    <span style="font-size: 20px">Test payment interface through CyberPlat gate:</span>
+    <div>
+        <span>Server CheckResponse:</span>
+        <table style="border: solid black 1px">
+            <tr>
+                <td>Info for user</td>
+                <td>@Model.DisplayInfo</td>
+            </tr>
+            <tr>
+                <td>Session number</td>
+                <td>@Model.Session</td>
+            </tr>
+            <tr>
+                <td>Error message and code</td>
+                <td>@(Model.Error?.Description ?? "null") (code = @(Model.Error?.Code.ToString() ?? "null"))</td>
+            </tr>
+        </table>
+        
+    </div>
+</div>
+</body>
+</html>
