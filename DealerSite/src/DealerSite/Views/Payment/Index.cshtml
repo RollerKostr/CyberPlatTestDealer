@@ -1,5 +1,5 @@
-﻿@using CyberPlatGate.Contracts.Gate
-@model GateCheckResponse
+﻿@using DealerSite.ViewModels
+@model PaymentViewModel
 
 @{
     Layout = null;
@@ -14,24 +14,49 @@
 </head>
 <body>
 <div>
-    <span style="font-size: 20px">Test payment interface through CyberPlat gate:</span>
+    <span style="font-size: 20px;">Test payment interface through CyberPlat gate:</span>
     <div>
-        <span>Server CheckResponse:</span>
-        <table style="border: solid black 1px">
-            <tr>
-                <td>Info for user</td>
-                <td>@Model.DisplayInfo</td>
-            </tr>
-            <tr>
-                <td>Session number</td>
-                <td>@Model.Session</td>
-            </tr>
-            <tr>
-                <td>Error message and code</td>
-                <td>@(Model.Error?.Description ?? "null") (code = @(Model.Error?.Code.ToString() ?? "null"))</td>
-            </tr>
-        </table>
-        
+        <form action="/Payment/Pay" method="post">
+            Phone number: <input type="text" id="numberInput" name="number" value="" /><br />
+            Amount to pay: <input type="text" id="amountInput" name="amount" value="" /><br />
+            <input type="submit" name="BtnPay" value="Pay" />
+            <input type="button" name="BtnClear" value="Clear" />
+        </form>
+    </div>
+    <div id="info" style="border: solid gray 1px; padding: 4px; margin: 20px; width: 600px; min-height: 100px;">
+        @{
+            if (Model.GateCheckResponse != null)
+            {
+                <span>Server CheckResponse:
+                    @if (Model.IsCheckSuccessfull)
+                    {
+                        <span style="background-color: green">
+                            <b>success</b>
+                        </span>
+                    }
+                    else
+                    {
+                        <span style="background-color: red">
+                            <b>fail</b>
+                        </span>
+                    }
+                </span>
+                <table style="border: solid black 1px">
+                    <tr>
+                        <td>Info for user</td>
+                        <td>@Model.GateCheckResponse.DisplayInfo</td>
+                    </tr>
+                    <tr>
+                        <td>Session number</td>
+                        <td>@Model.GateCheckResponse.Session</td>
+                    </tr>
+                    <tr>
+                        <td>Error message and code</td>
+                        <td>@(Model.GateCheckResponse.Error?.Description ?? "null") (code = @(Model.GateCheckResponse.Error?.Code.ToString() ?? "null"))</td>
+                    </tr>
+                </table>
+            }
+        }
     </div>
 </div>
 </body>
